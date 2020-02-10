@@ -1,22 +1,25 @@
-  
-// Imports: Dependencies
-import { ApolloServer } from 'apollo-server-express';
+const {gql} = require('apollo-server')
 
-// Imports: GraphQL TypeDefs & Resolvers
-import TYPEDEFS from './types';
-import RESOLVERS from './resolvers';
+const typeDefs = gql`
+  type Query {
+    getUsers: [User]
+    getUser(id: ID!): User
+  }
 
-// GraphQL: Schema
-const SERVER = new ApolloServer({
-  typeDefs: TYPEDEFS,
-  resolvers: RESOLVERS,
-  playground: {
-    endpoint: 'http://localhost:4000/graphql',
-    settings: {
-      'editor.theme': 'light',
-    },
-  },
-});
+  type Mutation {
+    login(email: String): String #login token
+    signup(email: String, password: String): User
 
-// Exports
-export default SERVER;
+  }
+
+  type User {
+    _id: ID!
+    name: String
+    email: String!
+    password: String!
+    isActive: Boolean!
+    role: String
+  }
+`
+
+module.exports = typeDefs;

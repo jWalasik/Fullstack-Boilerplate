@@ -1,34 +1,18 @@
-// Imports: Dependencies
-import axios from 'axios';
+const User = require('../models/user')
 
-// GraphQL: Resolvers
-const RESOLVERS = {
+const resolvers = {
   Query: {
-    findUser: (parent, args) => {
-      return axios.get('')
-        .then(response => response.data)
-        .catch(error => console.log(error));
-    },
+    getUsers: async () => await User.find({}).exec()
   },
 
   Mutation: {
-    addUser: (parent, args) => {
-      return axios.get('')
-        .then(response => response.data)
-        .catch(error => console.log(error));
-    },
-    deleteUser: (parent, args) => {
-      return axios.get('')
-        .then(response => response.data)
-        .catch(error => console.log(error));
-    },
-    updateUser: (parent, args) => {
-      return axios.get('')
-        .then(response => response.data)
-        .catch(error => console.log(error));
-    },
-  },
-};
+    signup: async(_, args) => User.create(args)
+      .then(user => {
+        user.save()
+        return user
+      })
+      .catch(err=>console.log(err))
+  }
+}
 
-// Exports
-export default RESOLVERS;
+module.exports = resolvers;

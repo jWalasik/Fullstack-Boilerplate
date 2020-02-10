@@ -1,42 +1,21 @@
-import express from 'express';
-import cors from 'cors';
-import open from 'open';
-import bodyParser from 'body-parser';
-import mongoose from 'mongoose';
-import passport from 'passport';
+require('dotenv').config()
 
-//import SERVER from './graphql/schema';
+const {ApolloServer} = require('apollo-server')
+const typeDefs = require('./graphql/schema')
+const resolvers = require('./graphql/resolvers')
+const mongoose = require('mongoose')
+const chalk = require('chalk')
 
-//require('dotenv').config();
+const {User} = require('./models/user')
+const MONGODB_URI = process.env.MONGODB_URI
+mongoose.connect(MONGODB_URI)
+  .then(res=>console.log('Successfully connected to MongoDB'))
+  .catch(err=>console.log(chalk.red(err)))
 
-const MONGODB_URI = 'xxx' || process.env.MONGODB_URI
+const server = new ApolloServer({typeDefs, resolvers});
 
-const APP = express();
-
-mongoose
-  .connect(MONGODB_URI,{})
-  .then(()=>console.log('MongoDB successfully connected'))
-  .catch(err=>console.log(err))
-
-
-APP.use(cors());
-APP.use(bodyParser.json())
-APP.use(bodyParser.urlencoded({extended:true}))
-
-APP.use('/graphql', passport.authenticate('jwt', {session: false}))
-
-APP.use('./routes/users', users)
-// SERVER.applyMiddleware({
-//   app: APP,
-// });
-
-const PORT = 4000 || process.env.API_PORT;
-
-APP.listen(PORT, () => {
-  console.log(`The server is running! Listening on port: ${PORT}`);
-  console.log(`http://localhost:${PORT}/graphql`);
-});
-
-open(`http://localhost:${PORT}/graphql`);
-
-export default APP;
+server.listen()
+  .then(({url}) => {
+    console.log(chalk.green(`Server running at ${url}`))
+  })
+  .catch(err=>console.log(chalk.red(err)))

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose') ;
 const bcrypt = require('bcrypt');
-const passportLocalMongoose = require('passport-local-mongoose')
+const jwt = require('jsonwebtoken');
 
 const Schema = mongoose.Schema
 
@@ -30,13 +30,67 @@ userSchema.pre('save', function() {
   this.password = hashedPass
 })
 
-userSchema.methods.hashPassword = (password) => bcrypt.hashSync(password, bcrypt.getSaltSync(12), null)
+// userSchema.methods.hashPassword = (password) => bcrypt.hashSync(password, bcrypt.getSaltSync(12), null)
 
-userSchema.methods.validatePassword = (password) => {
-  return bcrypt.compareSync(password, this.password)}
+// userSchema.methods.validatePassword = (password) => {
+//   return bcrypt.compareSync(password, this.password)}
 
-userSchema.plugin(passportLocalMongoose, {
-  usernameField: 'email'
-});
+// // userSchema.plugin(passportLocalMongoose, {
+// //   usernameField: 'email'
+// // });
+// Model Methods
+userSchema.methods.generateJWT = function () {
+  const today = new Date();
+  const expirationDate = new Date(today);
+  expirationDate.setDate(today.getDate() + 60);
+
+  return jwt.sign({
+      email: this.email,
+      id: this._id,
+      exp: parseInt(expirationDate.getTime() / 1000, 10),
+  }, 'secret');
+}
+
+userSchema.statics.upsertFbUser = async function ({ accessToken, refreshToken, profile }) {
+  const User = this;
+
+  const user = await User.findOne({ 'social.facebookProvider.id': profile.id });
+
+  // no user was found, lets create a new one
+  if (!user) {
+      const newUser = await User.create({
+          name: profile.displayName || `${profile.familyName} ${profile.givenName}`,
+          email: profile.emails[0].value,
+          'social.facebookProvider': {
+              id: profile.id,
+              token: accessToken,
+          },
+      });
+
+      return newUser;
+  }
+  return user;
+};
+
+userSchema.statics.upsertGoogleUser = async function ({ accessToken, refreshToken, profile }) {
+  const User = this;
+
+  const user = await User.findOne({ 'social.googleProvider.id': profile.id });
+
+  // no user was found, lets create a new one
+  if (!user) {
+      const newUser = await User.create({
+          name: profile.displayName || `${profile.familyName} ${profile.givenName}`,
+          email: profile.emails[0].value,
+          'social.googleProvider': {
+              id: profile.id,
+              token: accessToken,
+          },
+      });
+
+      return newUser;
+  }
+  return user;
+};
 
 module.exports = mongoose.model('User', userSchema)

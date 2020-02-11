@@ -17,13 +17,9 @@ mongoose.connect(MONGODB_URI)
 const server = new ApolloServer({
   typeDefs, 
   resolvers,
-  context: ({req, res}) => {
-    //console.log('context request' ,chalk.yellow(req.user))  
-    return ({
-      user: req.user
-    })
-  }
+  context: ({req, res}) => ({req, res})
 });
+
 
 server.listen()
   .then(({url}) => {

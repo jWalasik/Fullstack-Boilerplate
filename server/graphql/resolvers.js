@@ -1,6 +1,8 @@
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
 
+const {authenticateFacebook} = require('../passport/config')
+
 const resolvers = {
   Query: {
     getUsers: async () => await User.find({}).exec()
@@ -24,7 +26,43 @@ const resolvers = {
         console.log('Passwords matching')
         return res
       })
-    }
+    },
+
+    authFacebook: async (_, { input: { accessToken } }, { req, res }) => {
+      req.body = {
+        ...req.body,
+        access_token: accessToken,
+      };
+
+      try {
+        // data contains the accessToken, refreshToken and profile from passport
+        const { data, info } = await authenticateFacebook(req, res);
+
+        if (data) {
+          const user = await User.upsertFbUser(data);
+  
+          if (user) {
+            return ({
+              name: user.name,
+              token: user.generateJWT(),
+            });
+          }
+        }
+
+        if (info) {
+          console.log(info);
+          switch (info.code) {
+            case 'ETIMEDOUT':
+              return (new Error('Failed to reach Facebook: Try Again'));
+            default:
+              return (new Error('something went wrong'));
+          }
+        }
+        return (Error('server error'));
+      } catch (error) {
+        return error;
+      }
+    },
   }
 }
 

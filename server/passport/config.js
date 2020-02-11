@@ -1,32 +1,44 @@
-const LocalStrategy = require('passport-local').Strategy,
-      TwitterStrategy = require('passport-twitter').Strategy,
-      GoogleStrategy = require('passport-google').Strategy,
-      FacebookStratey = require('passport-facebook').Strategy;
+const passport = require('passport');
+const FacebookTokenStrategy = require('passport-facebook-token');
+const { Strategy: GoogleTokenStrategy } = require('passport-google-token');
 
+// FACEBOOK STRATEGY
+const FacebookTokenStrategyCallback = (accessToken, refreshToken, profile, done) => done(null, {
+    accessToken,
+    refreshToken,
+    profile,
+});
 
-passport.use(new passportLocalStrategy(
-  function(username, password, done) {
-    let validator = {}
+passport.use(new FacebookTokenStrategy({
+    clientID: process.env.FB_APP_ID,
+    clientSecret: process.env.FB_APP_KEY,
+}, FacebookTokenStrategyCallback));
 
-    if(username.indexOf('@') === -1){
-      validator.username = username
-    }
-    else {
-      validator.email = username
-    }
+// GOOGLE STRATEGY
+const GoogleTokenStrategyCallback = (accessToken, refreshToken, profile, done) => done(null, {
+    accessToken,
+    refreshToken,
+    profile,
+});
 
-    app.db.models.User.findOne(validator, (err, user)=>{
-      if(err) return done(err)
+passport.use(new GoogleTokenStrategy({
+    clientID: 'your-google-client-id',
+    clientSecret: 'your-google-client-secret',
+}, GoogleTokenStrategyCallback));
 
-      if(!user) return done(null, false, {message: 'Invalid Credentials'})
+// promisified authenticate functions
+const authenticateFacebook = (req, res) => new Promise((resolve, reject) => {
+    passport.authenticate('facebook-token', { session: false }, (err, data, info) => {
+        if (err) reject(err);
+        resolve({ data, info });
+    })(req, res);
+});
 
-      const encryptedPassword = app.db.models.User.hashPassword(password)
+const authenticateGoogle = (req, res) => new Promise((resolve, reject) => {
+    passport.authenticate('google-token', { session: false }, (err, data, info) => {
+        if (err) reject(err);
+        resolve({ data, info });
+    })(req, res);
+});
 
-      if(user.password != encryptedPassword){
-        return done(null, false, {message: 'Invalid Password'})
-      }
-
-      return done(null, user)
-    })
-  }
-))
+module.exports = { authenticateFacebook, authenticateGoogle };

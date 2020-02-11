@@ -1,15 +1,18 @@
-const {gql} = require('apollo-server-express')
+const {gql} = require('apollo-server')
 
 const typeDefs = gql`
+  type AuthResponse {
+    token: String
+    name: String
+  }
+
+  input AuthInput {
+    accessToken: String!
+  }
+
   type Query {
     getUsers: [User]
     getUser(id: ID!): User
-  }
-
-  type Mutation {
-    login(email: String, password: String): User
-    signup(email: String, password: String): User
-
   }
 
   type User {
@@ -19,6 +22,13 @@ const typeDefs = gql`
     password: String!
     isActive: Boolean!
     role: String
+  }
+
+  type Mutation {
+    login(email: String, password: String): User
+    signup(email: String, password: String): User!
+    authFacebook(input: AuthInput!): AuthResponse
+
   }
 `
 

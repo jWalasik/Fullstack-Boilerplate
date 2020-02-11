@@ -1,12 +1,14 @@
 const mongoose = require('mongoose') ;
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const passportLocalMongoose = require('passport-local-mongoose')
 
 const Schema = mongoose.Schema
 
 const userSchema = new Schema({
   email: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   password: {
     type: String,
@@ -15,6 +17,7 @@ const userSchema = new Schema({
   roles: {
     admin: {type: mongoose.Schema.Types.ObjectId, ref: 'Admin'}
   },
+  isActive: {type: Boolean, default: false},
   resetToken: String,
   resetTokenExp: Date,
   twitter: {},
@@ -27,8 +30,13 @@ userSchema.pre('save', function() {
   this.password = hashedPass
 })
 
-userSchema.methods.hashPassword = (password) => bcrypt.hashSync(password, bcrypt.getSaltSync(8), null)
+userSchema.methods.hashPassword = (password) => bcrypt.hashSync(password, bcrypt.getSaltSync(12), null)
 
-userSchema.methods.validatePassword = (password) => bcrypt.compareSync(password, this.password)
+userSchema.methods.validatePassword = (password) => {
+  return bcrypt.compareSync(password, this.password)}
+
+userSchema.plugin(passportLocalMongoose, {
+  usernameField: 'email'
+});
 
 module.exports = mongoose.model('User', userSchema)

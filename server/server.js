@@ -5,14 +5,25 @@ const typeDefs = require('./graphql/schema')
 const resolvers = require('./graphql/resolvers')
 const mongoose = require('mongoose')
 const chalk = require('chalk')
+const passport = require('passport')
 
 const {User} = require('./models/user')
+
 const MONGODB_URI = process.env.MONGODB_URI
 mongoose.connect(MONGODB_URI)
-  .then(res=>console.log('Successfully connected to MongoDB'))
+  .then(res=>console.log(chalk.green('Successfully connected to MongoDB')))
   .catch(err=>console.log(chalk.red(err)))
 
-const server = new ApolloServer({typeDefs, resolvers});
+const server = new ApolloServer({
+  typeDefs, 
+  resolvers,
+  context: ({req, res}) => {
+    //console.log('context request' ,chalk.yellow(req.user))  
+    return ({
+      user: req.user
+    })
+  }
+});
 
 server.listen()
   .then(({url}) => {

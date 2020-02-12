@@ -1,5 +1,7 @@
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
+const passport = require('passport')
+const util = require('util')
 
 const {authenticateFacebook} = require('../passport/config')
 
@@ -13,18 +15,18 @@ const resolvers = {
       .then(user => {
         return user
       })
-      .catch(err=>console.log(err)),
+      .catch(err=>err),
 
     login: (_, args) => {
-      return User.findOne({email: args.email}).then(res => {
-        const match = bcrypt.compareSync(args.password, res.password)
+      return User.findOne({email: args.email}).then(user => {
+        const match = bcrypt.compareSync(args.password, user.password)
         if(!match){
-          console.log('Passwords not matching')
-          return
+          return new Error('Passwords not matching!')
         }
         //return JWT
-        console.log('Passwords matching')
-        return res
+        user.token = user.generateJWT()
+        console.log(user.token)
+        return user
       })
     },
 
@@ -35,22 +37,19 @@ const resolvers = {
       };
 
       try {
-        // data contains the accessToken, refreshToken and profile from passport
+        // data contains the name, email, token and fb-id from passport
         const { data, info } = await authenticateFacebook(req, res);
-
+        
         if (data) {
-          const user = await User.upsertFbUser(data);
-  
-          if (user) {
+          return User.facebookAuth(data).then(user => {
             return ({
               name: user.name,
               token: user.generateJWT(),
-            });
-          }
+            })
+          })
         }
 
         if (info) {
-          console.log(info);
           switch (info.code) {
             case 'ETIMEDOUT':
               return (new Error('Failed to reach Facebook: Try Again'));
@@ -58,11 +57,14 @@ const resolvers = {
               return (new Error('something went wrong'));
           }
         }
-        return (Error('server error'));
       } catch (error) {
         return error;
       }
     },
+
+    authGoogle: (_, args) => {
+
+    }
   }
 }
 

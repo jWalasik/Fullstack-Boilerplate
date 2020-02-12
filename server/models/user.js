@@ -5,14 +5,16 @@ const jwt = require('jsonwebtoken');
 const Schema = mongoose.Schema
 
 const userSchema = new Schema({
+  name: {
+    type: String,
+  },
   email: {
     type: String,
     required: true,
     unique: true
   },
   password: {
-    type: String,
-    required: true
+    type: String
   },
   roles: {
     admin: {type: mongoose.Schema.Types.ObjectId, ref: 'Admin'}
@@ -30,14 +32,6 @@ userSchema.pre('save', function() {
   this.password = hashedPass
 })
 
-// userSchema.methods.hashPassword = (password) => bcrypt.hashSync(password, bcrypt.getSaltSync(12), null)
-
-// userSchema.methods.validatePassword = (password) => {
-//   return bcrypt.compareSync(password, this.password)}
-
-// // userSchema.plugin(passportLocalMongoose, {
-// //   usernameField: 'email'
-// // });
 // Model Methods
 userSchema.methods.generateJWT = function () {
   const today = new Date();
@@ -48,31 +42,28 @@ userSchema.methods.generateJWT = function () {
       email: this.email,
       id: this._id,
       exp: parseInt(expirationDate.getTime() / 1000, 10),
-  }, 'secret');
+  }, process.env.JWT_SECRET);
 }
 
-userSchema.statics.upsertFbUser = async function ({ accessToken, refreshToken, profile }) {
+userSchema.statics.facebookAuth = async function ({name, token, email, id }) {
   const User = this;
-
-  const user = await User.findOne({ 'social.facebookProvider.id': profile.id });
-
+  const user = await User.findOne({ 'email': email });
   // no user was found, lets create a new one
   if (!user) {
       const newUser = await User.create({
-          name: profile.displayName || `${profile.familyName} ${profile.givenName}`,
-          email: profile.emails[0].value,
-          'social.facebookProvider': {
-              id: profile.id,
-              token: accessToken,
+          name: name,
+          email: email,
+          facebook: {
+              id: id,
+              token: token
           },
       });
-
       return newUser;
   }
   return user;
 };
 
-userSchema.statics.upsertGoogleUser = async function ({ accessToken, refreshToken, profile }) {
+userSchema.statics.googleAuth = async function ({ accessToken, refreshToken, profile }) {
   const User = this;
 
   const user = await User.findOne({ 'social.googleProvider.id': profile.id });
@@ -87,7 +78,6 @@ userSchema.statics.upsertGoogleUser = async function ({ accessToken, refreshToke
               token: accessToken,
           },
       });
-
       return newUser;
   }
   return user;

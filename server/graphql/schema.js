@@ -22,13 +22,14 @@ const typeDefs = gql`
     password: String!
     isActive: Boolean!
     role: String
+    token: String
   }
 
   type Mutation {
     login(email: String, password: String): User
     signup(email: String, password: String): User!
     authFacebook(input: AuthInput!): AuthResponse
-
+    authGoogle(input: AuthInput!): AuthResponse
   }
 `
 

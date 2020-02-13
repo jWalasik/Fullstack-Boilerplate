@@ -1,12 +1,13 @@
 import * as React from "react";
 import { hot } from "react-hot-loader";
+import {Switch, Route, PrivateRouter} from 'react-router-dom'
+
+import Login from './auth/Login'
 
 class App extends React.Component<{}, undefined> {
   public render() {
     return (
-      <div className="app">
-        BoilerPlate
-      </div>
+      <Login />
     );
   }
 }

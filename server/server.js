@@ -6,6 +6,7 @@ const resolvers = require('./graphql/resolvers')
 const mongoose = require('mongoose')
 const chalk = require('chalk')
 const passport = require('passport')
+const util = require('util')
 
 const {User} = require('./models/user')
 
@@ -18,6 +19,8 @@ const server = new ApolloServer({
   typeDefs, 
   resolvers,
   context: ({req, res}) => {
+    //console.log(chalk.blue(util.inspect(req.body.access_token, false, null, true)))
+
     return ({req, res})
   }
 });

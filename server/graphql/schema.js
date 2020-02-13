@@ -3,7 +3,7 @@ const {gql} = require('apollo-server')
 const typeDefs = gql`
   type AuthResponse {
     token: String
-    name: String
+    email: String
   }
 
   input AuthInput {

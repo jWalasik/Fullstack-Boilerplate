@@ -7,9 +7,10 @@ passport.use(new FacebookTokenStrategy({
   clientID: process.env.FB_APP_ID,
   clientSecret: process.env.FB_APP_KEY
 }, function (accessToken, refreshToken, profile, done) {
-    console.log('Facebook Strategy Callback')
-    console.log('profile: ', profile) 
-    console.log('done: ', done)  
+  // console.log('Facebook Strategy Callback')
+  // console.log('profile: ', profile) 
+  // console.log('done: ', done)
+  console.log(arguments)
   let user = {
     'email': profile.emails[0].value,
     'name': profile.name.givenName + ' ' + profile.name.familyName,
@@ -28,11 +29,22 @@ passport.use(new GoogleTokenStrategy({
     clientID: process.env.GOOGLE_APP_ID,
     clientSecret: process.env.GOOGLE_APP_KEY,
 }, function(accessToken, refreshToken, profile, done) {
+  console.log(arguments)
+  // console.log('Google Strategy Callback')
+  // console.log('profile: ', profile) 
+  // console.log('done: ', done)
+  //profile.provider == 'google' if needed for unified fb/google auth
   let user = {
-    'email': profile
-  }
+    'email': profile.emails[0].value,
+    'name': profile.displayName,
+    'id': profile.id,
+    'token': accessToken
+  };
+  // You can perform any necessary actions with your user at this point,
+  // e.g. internal verification against a users table,
+  // creating new user entries, etc.
 
-  return done(null, user)
+  done(null, user); // the user object we just made gets passed to the route's controller as `req.user`
 }));
 
 // promisified authenticate functions

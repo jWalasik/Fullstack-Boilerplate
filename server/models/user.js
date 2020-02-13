@@ -37,7 +37,6 @@ userSchema.methods.generateJWT = function () {
   const today = new Date();
   const expirationDate = new Date(today);
   expirationDate.setDate(today.getDate() + 60);
-
   return jwt.sign({
       email: this.email,
       id: this._id,
@@ -63,21 +62,19 @@ userSchema.statics.facebookAuth = async function ({name, token, email, id }) {
   return user;
 };
 
-userSchema.statics.googleAuth = async function ({ accessToken, refreshToken, profile }) {
+userSchema.statics.googleAuth = async function ({name, token, email, id}) {
   const User = this;
-
-  const user = await User.findOne({ 'social.googleProvider.id': profile.id });
-
+  const user = await User.findOne({ 'email': email });
   // no user was found, lets create a new one
   if (!user) {
-      const newUser = await User.create({
-          name: profile.displayName || `${profile.familyName} ${profile.givenName}`,
-          email: profile.emails[0].value,
-          'social.googleProvider': {
-              id: profile.id,
-              token: accessToken,
-          },
-      });
+    const newUser = await User.create({
+      name: name,
+      email: email,
+      google: {
+          id: id,
+          token: token
+      },
+  });
       return newUser;
   }
   return user;

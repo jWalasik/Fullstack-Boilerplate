@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt')
 const passport = require('passport')
 const util = require('util')
 
-const {authenticateFacebook} = require('../passport/config')
+const {authenticateFacebook, authenticateGoogle} = require('../passport/config')
 
 const resolvers = {
   Query: {
@@ -25,12 +25,11 @@ const resolvers = {
         }
         //return JWT
         user.token = user.generateJWT()
-        console.log(user.token)
         return user
       })
     },
 
-    authFacebook: async (_, { input: { accessToken } }, { req, res }) => {
+    authFacebook: async (_, { input: { accessToken } }, { req, res }) => {// _, intup from graphql schema, context
       req.body = {
         ...req.body,
         access_token: accessToken,
@@ -43,7 +42,7 @@ const resolvers = {
         if (data) {
           return User.facebookAuth(data).then(user => {
             return ({
-              name: user.name,
+              email: user.email,
               token: user.generateJWT(),
             })
           })
@@ -62,8 +61,26 @@ const resolvers = {
       }
     },
 
-    authGoogle: (_, args) => {
-
+    authGoogle: (_, {input: {accessToken}}, {res, req}) => {
+      req.body = {
+        ...req.body,
+        access_token: accessToken,
+      };
+      return authenticateGoogle(req, res)
+        .then(({data, info})=>{
+          if(data) {
+            return User.googleAuth(data).then(user => {
+              return ({
+                email: user.email,
+                token: user.generateJWT(),
+              })
+            })
+          }
+          else if(info){
+            return new Error(info.message)
+          }
+        })
+      .catch(err=> err)
     }
   }
 }

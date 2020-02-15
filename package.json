@@ -7,7 +7,7 @@
     "lint": "tslint './src/**/*.ts*' --format stylish --project . --force",
     "start-client": "yarn run start-dev",
     "start-server": "nodemon --exec babel-node ./server/server.js",
-    "start-dev": "webpack-dev-server --content-base src --hot --inline --config=config/dev.js --public ",
+    "start-dev": "webpack-dev-server --hot --content-base src --inline --config=config/dev.js --public ",
     "start-prod": "yarn run build && node express.js",
     "test": "jest"
   },

@@ -24,5 +24,11 @@ module.exports = merge(basicConfig, {
   plugins: [
     new webpack.HotModuleReplacementPlugin(), // enable HMR globally
     new webpack.NamedModulesPlugin(), // prints more readable module names in the browser console on HMR updates
+    new webpack.DefinePlugin({
+      'process.env.FB_APP_ID': JSON.stringify(process.env.FB_APP_ID),
+      'process.env.FB_APP_KEY': JSON.stringify(process.env.FB_APP_KEY),
+      'process.env.GOOGLE_APP_ID': JSON.stringify(process.env.GOOGLE_APP_ID),
+      'process.env.GOOGLE_APP_KEY': JSON.stringify(process.env.GOOGLE_APP_KEY),
+    }),
   ],
 });

@@ -10,6 +10,7 @@ const client = new ApolloClient({
 	uri: 'http://localhost:4000/graphql',
 	headers: {
 		authorization: localStorage.getItem('token'),
+		credentials: 'include',
 		'client-name': 'diet-helper'
 	},
 	onError: ({ networkError, graphQLErrors }) => {

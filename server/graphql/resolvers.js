@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt')
 const passport = require('passport')
 const util = require('util')
 
-const {authenticateFacebook, authenticateGoogle} = require('../passport/config')
+const {authenticateFacebook, authenticateGoogle, socialAuthentication} = require('../passport/config')
 
 const resolvers = {
   Query: {
@@ -29,6 +29,13 @@ const resolvers = {
       })
     },
 
+    socialAuth: (_, args, {req, res}) => {
+      req.body = {
+        ...req.body,
+        provider: args.provider
+      }
+      socialAuthentication(args.provider, req, res)
+    },
     authFacebook: async (_, { input: { accessToken } }, { req, res }) => {// _, intup from graphql schema, context
       req.body = {
         ...req.body,

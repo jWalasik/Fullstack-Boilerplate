@@ -2,6 +2,7 @@ import * as React from 'react';
 import {useState} from 'react'
 import {gql} from 'apollo-boost'
 import {useMutation} from '@apollo/react-hooks'
+import Socials from './Socials'
 
 const _login = gql`
 mutation login($login: String!, $password: String!) {
@@ -25,7 +26,7 @@ const Login = () => {
     submitLogin({variables: {login, password}})
       .then(res=> {
         console.log(res)
-        //use token & redirect
+        localStorage.setItem("token", res.data.login.token)
       })
       .catch(err=>console.log)
   }
@@ -35,13 +36,7 @@ const Login = () => {
     >
       <h1 className="login-header">Login to your account</h1>
       
-      <ul className="login-options">
-        <li><a className="login-options__link" href="/auth/facebook">
-          Facebook 
-        </a></li>
-        <li><a className="login-options__link"  href="/auth/google">Google</a></li>
-        <li><a className="login-options__link"  href="/auth/google">Twitter</a></li>
-      </ul>
+      <Socials />
       
       <div className="input-field">
         <img className="input-icon" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/user_icon_copy.png" />

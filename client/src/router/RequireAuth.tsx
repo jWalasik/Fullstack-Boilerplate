@@ -15,7 +15,7 @@ const checkAuth = gql`
 const RequireAuth = (props) => {
   const {data} = useQuery(checkAuth)
   console.log(data)
-  return data ? (
+  return !data.isAuth ? (
     <Login />
   ) : (
     <Fragment>

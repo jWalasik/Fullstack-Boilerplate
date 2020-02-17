@@ -7,6 +7,7 @@ const mongoose = require('mongoose')
 const chalk = require('chalk')
 const passport = require('passport')
 const util = require('util')
+const cors = require('cors')
 
 const {User} = require('./models/user')
 
@@ -18,13 +19,18 @@ mongoose.connect(MONGODB_URI)
 const server = new ApolloServer({
   typeDefs, 
   resolvers,
+  cors: {
+    origin: "*",
+    credentials: true,
+    optionsSuccessStatus: 200,
+    methods: ['POST']
+  },
   context: ({req, res}) => {
-    //console.log(chalk.blue(util.inspect(req.body.access_token, false, null, true)))
+    // console.log(chalk.blue(util.inspect(req.body.access_token, false, null, true)))
 
     return ({req, res})
   }
 });
-
 
 server.listen()
   .then(({url}) => {

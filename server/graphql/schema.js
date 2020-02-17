@@ -30,6 +30,7 @@ const typeDefs = gql`
     signup(email: String, password: String): User!
     authFacebook(input: AuthInput!): AuthResponse
     authGoogle(input: AuthInput!): AuthResponse
+    socialAuth(provider: String!): AuthResponse
   }
 `
 

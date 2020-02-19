@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
-      "outDir": "./dist/",
+      "outDir": "./build/",
+      "rootDir": "./",
       "sourceMap": true,
       "noImplicitAny": false,
       "module": "commonjs",
       "target": "es5",
       "jsx": "react",
       "lib": ["es5", "es6", "dom"],
-      "baseUrl": "."
+      "esModuleInterop": true
   },
   "include": [
       "./client/src/**/*", 

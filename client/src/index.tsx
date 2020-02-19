@@ -1,24 +1,35 @@
 import * as React from "react";
 import { render } from "react-dom";
-import ApolloClient, {InMemoryCache} from 'apollo-boost';
+
+import { ApolloClient } from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { createHttpLink } from 'apollo-link-http';
+import { ApolloLink } from 'apollo-link';
 import { ApolloProvider } from '@apollo/react-hooks';
+import { onError } from 'apollo-link-error';
 
 import App from "./router";
 
 const cache = new InMemoryCache()
+
 const client = new ApolloClient({
-	uri: 'http://localhost:4000/graphql',
-	headers: {
-		authorization: localStorage.getItem('token'),
-		credentials: 'include',
-		'client-name': 'diet-helper'
-	},
-	onError: ({ networkError, graphQLErrors }) => {
-    console.log('graphQLErrors', graphQLErrors)
-    console.log('networkError', networkError)
-  },
-	cache
-})
+  link: ApolloLink.from([
+    onError(({ graphQLErrors, networkError }) => {
+      if (graphQLErrors)
+        graphQLErrors.forEach(({ message, locations, path }) =>
+          console.log(
+            `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+          )
+        );
+      if (networkError) console.log(`[Network error]: ${networkError}`);
+    }),
+    createHttpLink({
+      uri: 'http://localhost:4000/graphql',
+      credentials: 'include'
+    })
+  ]),
+  cache: cache
+});
 
 cache.writeData({
 	data: {

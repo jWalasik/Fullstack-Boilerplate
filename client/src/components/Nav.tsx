@@ -17,9 +17,9 @@ const Header = () => (
           <Link to="/shop-list">Shopping List</Link>
         </li>
         <li style={{ display: "inline" }}>
-          <Link to="/sign" >
+          <button onClick={()=>localStorage.removeItem("token")}>
             Logout
-          </Link>
+          </button>
         </li>
       </ul>
     </nav>

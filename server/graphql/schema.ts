@@ -33,5 +33,5 @@ const typeDefs = gql`
     socialAuth(provider: String!): AuthResponse
   }
 `
-
+//export default typeDefs
 module.exports = typeDefs;

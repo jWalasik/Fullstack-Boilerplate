@@ -19,6 +19,9 @@ module.exports = merge(basicConfig, {
   devServer: {
     hot: true, // enable HMR on the server
     open: true,
+    proxy: {
+      '/auth': 'http://localhost:4000'
+    }
   },
   devtool: 'cheap-module-eval-source-map',
   plugins: [

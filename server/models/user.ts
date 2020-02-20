@@ -10,7 +10,7 @@ const userSchema = new Schema({
   },
   email: {
     type: String,
-    required: true,
+    required: false,
     unique: true
   },
   password: {
@@ -34,50 +34,15 @@ userSchema.pre('save', function() {
 
 // Model Methods
 userSchema.methods.generateJWT = function () {
+  console.log('gerate JWT: ', this)
   const today = new Date();
   const expirationDate = new Date(today);
   expirationDate.setDate(today.getDate() + 60);
   return jwt.sign({
-      email: this.email,
+      email: this.email || this.name,
       id: this._id,
       exp: (expirationDate.getTime() / 1000, 10),
   }, process.env.JWT_SECRET);
 }
-
-userSchema.statics.facebookAuth = async function ({name, token, email, id }) {
-  const User = this;
-  const user = await User.findOne({ 'email': email });
-  // no user was found, lets create a new one
-  if (!user) {
-      const newUser = await User.create({
-          name: name,
-          email: email,
-          facebook: {
-              id: id,
-              token: token
-          },
-      });
-      return newUser;
-  }
-  return user;
-};
-
-userSchema.statics.googleAuth = async function ({name, token, email, id}) {
-  const User = this;
-  const user = await User.findOne({ 'email': email });
-  // no user was found, lets create a new one
-  if (!user) {
-    const newUser = await User.create({
-      name: name,
-      email: email,
-      google: {
-          id: id,
-          token: token
-      },
-  });
-      return newUser;
-  }
-  return user;
-};
 
 module.exports = mongoose.model('User', userSchema)

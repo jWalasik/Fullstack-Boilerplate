@@ -31,15 +31,15 @@ require('./services/passport.ts')(passport)
 app.use(passport.initialize())
 
 //3rd party related routes
-app.use('/auth/facebook', passport.authenticate('facebook', {scope: ['public_profile', 'email']}))
+app.use('/auth/facebook', passport.authenticate('facebook', {"session": false, scope: ['public_profile', 'email']}))
 app.use('/auth/facebook/callback', passport.authenticate('facebook'), (req, res) => {
   res.redirect(process.env.CLIENT_URL || '')
 })
-app.get('/auth/google', passport.authenticate('google', {scope: ['profile']}))
+app.get('/auth/google', passport.authenticate('google', {"session": false, scope: ['profile', 'email']}))
 app.get('/auth/google/callback', passport.authenticate('google'), (req, res) => {
   res.redirect(process.env.CLIENT_URL || '')
 })
-app.get('/auth/twitter', passport.authenticate('twitter', {scope: ['profile']}))
+app.get('/auth/twitter', passport.authenticate('twitter', {"session": false, scope: ['profile']}))
 app.get('/auth/twitter/callback', passport.authenticate('twitter'), (req, res) => {
   res.redirect(process.env.CLIENT_URL || '')
 })

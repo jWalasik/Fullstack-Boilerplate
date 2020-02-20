@@ -18,13 +18,13 @@ const Socials = () => {
         </li>
 
         <li>
-          <a className="login-options__link" href="http://localhost:4000/auth/google">
+          <a className="login-options__link" href="/auth/google">
             <img className="social-link__icon" src={google.default} id="google" />
           </a>
         </li>
 
         <li>
-          <a className="login-options__link" href="http://localhost:4000/auth/twitter">
+          <a className="login-options__link" href="/auth/twitter">
             <img className="social-link__icon" src={twitter.default}  id="twitter" />
           </a>
         </li>

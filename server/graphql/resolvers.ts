@@ -3,7 +3,8 @@ const bcrypt = require('bcrypt')
 
 const resolvers = {
   Query: {
-    getUsers: async () => await User.find({}).exec()
+    getUsers: async () => await User.find({}).exec(),
+    currentUser: (parent, args, context) => context.user
   },
 
   Mutation: {

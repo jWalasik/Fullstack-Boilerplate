@@ -21,8 +21,9 @@ export default () => {
       <Route exact path="/meal-planner" component={Planner} />
       <Route exact path="/settings" component={Settings} />
       <Route exact path="/shop-list" component={ShoppingList} />
-      <Route path="/auth/" component={Sign} />
+      
     </Switch>
-    </RequireAuth>    
+    </RequireAuth> 
+    <Route path="/auth" component={Sign} />
   </BrowserRouter>
 )}

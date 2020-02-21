@@ -20,7 +20,10 @@ module.exports = merge(basicConfig, {
     hot: true, // enable HMR on the server
     open: true,
     proxy: {
-      '/auth': 'http://localhost:4000'
+      '/auth/**': {
+        target: 'http://localhost:4000',
+        changeOrigin: true
+      }
     }
   },
   devtool: 'cheap-module-eval-source-map',

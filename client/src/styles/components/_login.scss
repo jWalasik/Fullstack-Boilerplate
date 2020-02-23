@@ -19,8 +19,22 @@
   color: $interactive;
 }
 .login-header {
-  margin: 0 auto 40px;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  margin: 5px auto 5px;
+}
+.breaker {
+  
+}
+.signup {
   font-size: 18px;
+  color: darken($interactive, 10%);
+  cursor: pointer;
+  
+  &:hover {
+    color: $interactive;
+  }
 }
 .input-field {
   width: 100%;

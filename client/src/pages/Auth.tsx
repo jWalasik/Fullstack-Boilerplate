@@ -10,19 +10,24 @@ const Map = {
   'reset': Reset
 }
 
-const Sign = () => {
+const Auth = () => {
   const [display, setDisplay] = useState('login')
 
   let Display = Map[display]
+  const changeDisplay = (e) => {
+    console.log(e)
+    setDisplay(e)
+  }
+
   return (
-    <main>
-      <button id='login' onClick={()=>setDisplay('login')}>Login</button>
+    <main className="auth-page">
+      {/* <button id='login' onClick={()=>setDisplay('login')}>Login</button>
       <button id='signup' onClick={()=>setDisplay('signup')}>Signup</button>
-      <button id='reset' onClick={()=>setDisplay('reset')}>Reset</button>
+      <button id='reset' onClick={()=>setDisplay('reset')}>Reset</button> */}
       
-      <Display />
+      <Display handler={changeDisplay}/>
     </main>
   )
 }
 
-export default Sign
+export default Auth

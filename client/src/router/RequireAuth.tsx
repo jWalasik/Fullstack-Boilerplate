@@ -2,7 +2,7 @@ import * as React from 'react'
 import {Component, Fragment, useEffect} from 'react'
 import {withRouter, useHistory} from 'react-router-dom'
 
-import Sign from '../pages/Sign'
+import Auth from '../pages/Auth'
 import Nav from '../components/Nav'
 import {useQuery} from '@apollo/react-hooks'
 import {gql} from 'apollo-boost'
@@ -23,7 +23,7 @@ const RequireAuth = (props) => {
   if(!loading) isAuth = (!!data.currentUser || !!localStorage.getItem('token'))
   console.log(isAuth)
   return (!isAuth) ? (
-    <Sign />
+    <Auth />
   ) : (
     <Fragment>
       <Nav />

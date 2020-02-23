@@ -3,7 +3,7 @@ import {useState} from 'react'
 import { SIGNUP } from '../apollo/mutations'
 import { useMutation } from "@apollo/react-hooks";
 
-const Signup = () => {
+const Signup = (props) => {
   const [password, setPassword] = useState()
   const [email, setEmail] = useState()
   const [name, setName] = useState()
@@ -66,7 +66,7 @@ const Signup = () => {
       <div className="form-buttons">          
         <button className="login-button">Sign Up</button>
 
-        <p className="login password_reminder">Already have account?</p>
+        <p className="login password_reminder" onClick={()=>props.handler('login')} >Already have account?</p>
         
       </div>       
     </form>

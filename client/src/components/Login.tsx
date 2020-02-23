@@ -16,7 +16,7 @@ const _login = gql`
   }
 `
 
-const Login = () => {
+const Login = (props) => {
   let history = useHistory();
   const [password, setPassword] = useState()
   const [login, setLogin] = useState() 
@@ -38,9 +38,10 @@ const Login = () => {
       onSubmit={handleSubmit}
     >
       <h1 className="login-header">Login to your account</h1>
-      
+      <p className="login-header breaker">or</p>
+      <p className="login-header signup" onClick={()=>props.handler('signup')}>Register new user</p>
+
       <Socials />
-      
       <div className="input-field">
         <img className="input-icon" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/user_icon_copy.png" />
         <input
@@ -69,7 +70,8 @@ const Login = () => {
       
       <div className="form-buttons">          
         <button className="login-button">LOG IN</button>
-        <p className="login password_reminder">Forgot Password?</p>
+        
+        <p className="login password_reminder" onClick={()=>props.handler('reset')}>Forgot Password?</p>
       </div>         
     </form>
   );

@@ -17,6 +17,7 @@ module.exports = merge(basicConfig, {
     path: path.resolve(__dirname, '../client/public/')
   },
   devServer: {
+    historyApiFallback: true,
     hot: true, // enable HMR on the server
     open: true,
     proxy: {

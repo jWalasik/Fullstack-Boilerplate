@@ -53,7 +53,7 @@ module.exports = function(passport){
 
     const processProfile = async (profile, done) => {
       try {
-        const { id, displayName, emails, provider} = profile
+        const { id, displayName, emails=[{value:null}], provider} = profile //facebook sdk provides emails only to production apps, hence placeholder
         const existingUser = await User.findOne({$or:[
           {[provider]: id},
           {email: emails[0].value}

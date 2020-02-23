@@ -1,12 +1,13 @@
-# MERN-boilerplate
+# Fullstack-Boilerplate
 
 This is a boilerplate project using the following technologies:
+- [Apollo](https://www.apollographql.com/) apollo platform for seamless client-server integration
 - [React](https://facebook.github.io/react/) and [React Router](https://reacttraining.com/react-router/) for the frontend
 - [Express](http://expressjs.com/) and [Mongoose](http://mongoosejs.com/) for the backend
 - [Webpack](https://webpack.github.io/) for compilation
-- [GraphQL]() for communication between client and server
-- [MongoDB]() noSQL database for storage
-- [Typescript]() for 
+- [GraphQL](https://graphql.org/) for communication between client and server
+- [MongoDB](https://www.mongodb.com/) noSQL database for storage, 
+- [Typescript](https://www.typescriptlang.org/) 
 
 
 ## Requirements

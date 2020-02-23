@@ -24,7 +24,9 @@ const Socials = () => {
         </li>
 
         <li>
-          <a className="login-options__link" href="/auth/twitter">
+          <a className="login-options__link" 
+            //href="/auth/twitter"
+          >
             <img className="social-link__icon" src={twitter.default}  id="twitter" />
           </a>
         </li>

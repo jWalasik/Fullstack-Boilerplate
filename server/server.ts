@@ -46,13 +46,16 @@ app.get('/auth/twitter/callback', passport.authenticate('twitter'), (req, res) =
   res.redirect(process.env.CLIENT_URL || '')
 })
 
-app.get('/logut', (req, res) => req.logout())
+app.get('/logout', (req, res) => req.logout())
 
 const server = new ApolloServer({
   typeDefs, 
   resolvers,
   context: ({req}) => {
-    return req
+    return {
+      user: req.user,
+      logout: ()=>req.logout()
+    }
   },
   playground: {
     settings: {

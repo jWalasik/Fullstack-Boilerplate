@@ -1,21 +1,23 @@
 import * as React from 'react';
 import {useState} from 'react'
+import { useHistory } from "react-router-dom";
 import {gql} from 'apollo-boost'
 import {useMutation} from '@apollo/react-hooks'
 import Socials from './Socials'
 
 const _login = gql`
-mutation login($login: String!, $password: String!) {
-  login(email: $login, password: $password) {
-    email
-    _id
-    isActive
-    token
+  mutation login($login: String!, $password: String!) {
+    login(user: $login, password: $password) {
+      email
+      _id
+      isActive
+      token
+    }
   }
-}
 `
 
 const Login = () => {
+  let history = useHistory();
   const [password, setPassword] = useState()
   const [login, setLogin] = useState() 
 
@@ -27,6 +29,7 @@ const Login = () => {
       .then(res=> {
         console.log(res)
         localStorage.setItem("token", res.data.login.token)
+        history.push('/')
       })
       .catch(err=>console.log)
   }
@@ -44,7 +47,7 @@ const Login = () => {
           value={login}
           onChange={(e)=> setLogin(e.target.value)}
           className="login-input" 
-          type="email" 
+          type="text" 
           required 
           name="login" 
           placeholder="Login/Email" 

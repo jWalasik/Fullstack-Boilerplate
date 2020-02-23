@@ -27,11 +27,12 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    login(email: String, password: String): User
-    signup(email: String, password: String): User!
+    login(user: String!, password: String!): User
+    signup(email: String!, password: String!, name: String): User
     authFacebook(input: AuthInput!): AuthResponse
     authGoogle(input: AuthInput!): AuthResponse
     socialAuth(provider: String!): AuthResponse
+    logout: Boolean
   }
 `
 //export default typeDefs

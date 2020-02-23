@@ -8,14 +8,22 @@ const resolvers = {
   },
 
   Mutation: {
-    signup: (_, args) => User.create(args)
+    signup: (_, args) => {
+      console.log('user signup: ', args)
+      return User.create(args)
       .then(user => {
         return user
       })
-      .catch(err=>err),
+      .catch(err=>err)},
 
     login: (_, args) => {
-      return User.findOne({email: args.email}).then(user => {
+      console.log(args)
+      return User
+      .findOne({$or:[
+        {email: args.user},
+        {name: args.user}, //to-do: change argument to neutral
+        
+      ]}).then(user => {
         const match = bcrypt.compareSync(args.password, user.password)
         if(!match){
           return new Error('Passwords not matching!')
@@ -24,7 +32,17 @@ const resolvers = {
         user.token = user.generateJWT()
         return user
       })
+      .catch(err=> {
+        console.log(err)
+        return err
+      })
     },
+    logout: (_, args, context) => {
+      console.log('loggin out...')
+      console.log(context.user)
+      context.user = {}
+      context.logout()
+    }
   }
 }
 

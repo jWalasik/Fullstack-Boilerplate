@@ -20,11 +20,7 @@ const Auth = () => {
   }
 
   return (
-    <main className="auth-page">
-      {/* <button id='login' onClick={()=>setDisplay('login')}>Login</button>
-      <button id='signup' onClick={()=>setDisplay('signup')}>Signup</button>
-      <button id='reset' onClick={()=>setDisplay('reset')}>Reset</button> */}
-      
+    <main className="auth-page">    
       <Display handler={changeDisplay}/>
     </main>
   )

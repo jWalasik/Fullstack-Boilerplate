@@ -33,6 +33,7 @@ const typeDefs = gql`
     authGoogle(input: AuthInput!): AuthResponse
     socialAuth(provider: String!): AuthResponse
     logout: Boolean
+    changePassword(user: String!, currentPass: String!, newPass: String!): User
   }
 `
 //export default typeDefs

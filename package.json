@@ -10,7 +10,7 @@
     "start-server": "nodemon --exec babel-node ./server/server.ts",
     "start-dev": "webpack-dev-server --hot --content-base src --inline --config=config/dev.js --public --env.ENVIRONMENT=dev",
     "start-prod": "yarn run build && node express.js",
-    "start": "concurrently \"npm start-client\" \"npm start-server\"",
+    "start": "concurrently \"yarn start-dev\" \"yarn start-server\"",
     "test": "jest"
   },
   "keywords": [

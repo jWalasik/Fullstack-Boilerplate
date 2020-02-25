@@ -13,7 +13,8 @@ const Signup = (props) => {
   const handleSubmit = e => {
     e.preventDefault()
     submitSingup({variables: {email,password,name}}).then(res=>{
-      console.log('signup form submitted')
+      console.log('signup form submitted', res)
+      window.location.reload()
     })
   }
 

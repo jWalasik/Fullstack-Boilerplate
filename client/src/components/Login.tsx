@@ -8,6 +8,7 @@ import Socials from './Socials'
 const _login = gql`
   mutation login($login: String!, $password: String!) {
     login(user: $login, password: $password) {
+      name
       email
       _id
       isActive

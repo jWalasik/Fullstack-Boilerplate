@@ -29,8 +29,8 @@ export const SIGNUP = gql`
 `
 
 export const CHANGE_PASSWORD = gql`
-  mutation changePassword($oldPassword: String!, $newPassword: String!) {
-    changePassword(oldPassword: $oldPass, newPassword: $newPass) {
+  mutation changePassword($user: String!, $currentPass: String!, $newPass: String!) {
+    changePassword(user: $user, currentPass: $currentPass, newPass: $newPass) {
       password
     }
   }

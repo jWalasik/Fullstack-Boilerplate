@@ -20,7 +20,7 @@ const Auth = () => {
   }
 
   return (
-    <main className="auth-page">    
+    <main>    
       <Display handler={changeDisplay}/>
     </main>
   )

@@ -12,7 +12,14 @@ body {
 }
 
 main {
-  height: 100vh;
+  min-height: 100vh;
+  background-color: $background-field;
+  display: flex;
+  flex-direction: column;
+  //align-content: center;
+  align-items: center;
+  //justify-content: center;
+  margin: 0;
 }
 
 input:-webkit-autofill,

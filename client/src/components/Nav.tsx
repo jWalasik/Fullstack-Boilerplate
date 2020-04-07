@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { LOGOUT } from "../apollo/mutations";
 import { useQuery,useMutation, useApolloClient } from "@apollo/react-hooks";
 
-const Header = (props) => {
+const Nav = (props) => {
   const [logout, {data}] = useMutation(LOGOUT)
   const client = useApolloClient()
   const handleLogout = (e) => {
@@ -11,27 +11,22 @@ const Header = (props) => {
     logout().then(res=> client.resetStore())
   }
   return (
-    <header>
-      <nav>
-        <ul style={{ listStyleType: "none" }}>
-          <li style={{ display: "inline", marginRight: 20 }}>
+      <nav className="menu">
+        <ul className="menu-list">
+          <li>
             <Link to="/">Home</Link>
           </li>
-          <li style={{ display: "inline", marginRight: 20 }}>
+          <li>
             <Link to="/settings">Settings</Link>
           </li>
-          <li style={{ display: "inline", marginRight: 20 }}>
-            <Link to="/shop-list">Shopping List</Link>
-          </li>
-          <li style={{ display: "inline" }}>
+          <li className="logout">
             <button onClick={handleLogout}>
               Logout
             </button>
           </li>
         </ul>
       </nav>
-    </header>
   )
 }
 
-export default Header;
+export default Nav;

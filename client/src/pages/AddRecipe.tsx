@@ -1,7 +1,9 @@
 import * as React from 'react'
 
 const AddRecipe = () => (
-  <div>New Recipe</div>
+  <main>
+    <h1></h1>
+  </main>
 )
 
 export default AddRecipe

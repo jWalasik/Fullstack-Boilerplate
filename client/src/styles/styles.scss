@@ -1,7 +1,10 @@
 @import './base/settings';
 @import './base/base';
+
 @import './components/app';
 @import './components/login';
 @import './components/signup';
 @import './components/socials';
+@import './components/nav';
+
 @import './pages/auth';

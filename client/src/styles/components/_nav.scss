@@ -1,0 +1,25 @@
+.menu {
+  background-color: darken($background-field, 2);
+}
+
+.menu-list {
+  display: flex;
+  list-style-type: none;
+  padding: 0;
+
+  & li {
+    margin: $s-size;
+  
+    & a {
+      text-decoration: none;
+      color: darken($interactive, 10%);
+
+      &:hover{
+        color: $interactive
+      }
+    }
+  }
+  & .logout {
+    margin-left: auto;
+  }
+}

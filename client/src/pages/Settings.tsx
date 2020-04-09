@@ -1,12 +1,13 @@
 import * as React from 'react'
 import { useState } from 'react'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import {GET_USER} from '../apollo/queries'
-import {CHANGE_PASSWORD} from '../apollo/mutations'
+import { GET_USER } from '../apollo/queries'
+import { CHANGE_PASSWORD } from '../apollo/mutations'
 
 const Settings = () => {
   const {client, loading, data} = useQuery(GET_USER)
-  console.log(data)
+  const token = localStorage.getItem('token')
+  console.log(data,token)
   const [submitPassword, {}] = useMutation(CHANGE_PASSWORD)
   //console.log(data.currentUser)
   const [currentPass, setCurrPass] = useState(),
@@ -14,7 +15,7 @@ const Settings = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log(currentPass, newPass)
+    
     const user = data.currentUser.name
     submitPassword({variables: {user, currentPass, newPass}})
   }
@@ -33,7 +34,7 @@ const Settings = () => {
           value={currentPass}
           onChange={(e)=> setCurrPass(e.target.value)}
           className="" 
-          type="text" 
+          type="password" 
           required 
           name="currentPassword" 
           placeholder="Current Password" 
@@ -43,7 +44,7 @@ const Settings = () => {
           value={newPass}
           onChange={(e)=> setNewPass(e.target.value)}
           className="" 
-          type="text" 
+          type="password" 
           required 
           name="newPassword" 
           placeholder="New Password" 

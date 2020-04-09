@@ -7,6 +7,7 @@ const cors = require('cors') //needed for provider authentication, i.e. facebook
 const passport = require('passport')
 const mongoose = require('mongoose') //mongoose 
 const session = require('express-session')
+const https = require('https')
 //graphql 
 const typeDefs = require('./graphql/schema.ts')
 const resolvers = require('./graphql/resolvers.ts')

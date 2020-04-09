@@ -34,6 +34,7 @@ const typeDefs = gql`
     socialAuth(provider: String!): AuthResponse
     logout: Boolean
     changePassword(user: String!, currentPass: String!, newPass: String!): User
+    facebookSignIn(code: String!): User
   }
 `
 //export default typeDefs

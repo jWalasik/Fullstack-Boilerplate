@@ -35,3 +35,15 @@ export const CHANGE_PASSWORD = gql`
     }
   }
 `
+
+export const FACEBOOK_SIGN_IN = gql`
+  mutation facebookSignIn($code: String!) {
+    facebookSignIn(code: $code){
+      user {
+        id
+        email
+        name
+      }
+    }
+  }
+`

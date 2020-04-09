@@ -1,5 +1,9 @@
 const User = require('../models/user.ts')
 const bcrypt = require('bcrypt')
+const FB = require('../services/facebook.ts')
+const session = require('express-session')
+
+const facebook = new FB()
 
 const resolvers = {
   Query: {
@@ -57,6 +61,46 @@ const resolvers = {
         if(!match) {
           console.log('Password not matching')
         }
+      })
+    },
+    facebookSignIn: (_, args, context) => {
+      console.log('facebook sign in')
+      return new Promise((resolve, reject) => {
+        const {code} = args
+    
+        //short-term access token
+        facebook.call('oauth/access_token', {code}).then(response => {
+          const {access_token} = response
+    
+          facebook.call('me', {access_token}).then(response => {
+            const {name, id} = response
+            console.log(response)
+            User.findOne({facebook: id}).then(user => {
+              if(user){
+                resolve({
+                  user: user,
+                  session: session.create({user: user.id})
+                })
+              } else {
+                facebook.call('oauth/access_token', {
+                  grant_type: 'fb_exchange_token',
+                  fb_exchange_token: access_token
+                }).then(response => {
+                  const {access_token} = response
+    
+                  resolve(User.create({
+                    facebook: id,
+                    email: `${name}@placeholder.fb`,
+                    name: name,
+                    isActive: true
+                  }))
+                })
+              }
+            })
+          })
+        }).catch(e=>{
+          resolve({error: e.toString()})
+        })
       })
     }
   }

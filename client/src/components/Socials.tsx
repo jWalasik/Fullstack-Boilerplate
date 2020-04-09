@@ -1,4 +1,5 @@
 import * as React from 'react'
+import FacebookSignIn from './FacebookSignIn'
 
 import {gql} from 'apollo-boost'
 
@@ -11,6 +12,10 @@ const Socials = () => {
   return (
     <div>
       <ul className="login-options">
+        <li>
+          <FacebookSignIn />
+        </li>
+
         <li>          
           <a className="login-options__link" href="/auth/facebook">
             <img className="social-link__icon" src={fb.default} id="facebook" />

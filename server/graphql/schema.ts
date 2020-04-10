@@ -19,11 +19,12 @@ const typeDefs = gql`
   type User {
     _id: ID!
     name: String
-    email: String!
+    email: String
     password: String!
     isActive: Boolean!
     role: String
     token: String
+    facebook: String
   }
 
   type Mutation {

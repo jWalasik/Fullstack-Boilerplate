@@ -64,22 +64,25 @@ const resolvers = {
       })
     },
     facebookSignIn: (_, args, context) => {
-      console.log('facebook sign in')
       return new Promise((resolve, reject) => {
         const {code} = args
-    
+        
         //short-term access token
         facebook.call('oauth/access_token', {code}).then(response => {
           const {access_token} = response
-    
           facebook.call('me', {access_token}).then(response => {
             const {name, id} = response
-            console.log(response)
+            
             User.findOne({facebook: id}).then(user => {
               if(user){
+                console.log('user found: ', user)
                 resolve({
-                  user: user,
-                  session: session.create({user: user.id})
+                  name: user.name,
+                  _id: user._id,
+                  email: user.email,
+                  facebook: user.facebook
+                  
+                  //use session or jwt here
                 })
               } else {
                 facebook.call('oauth/access_token', {
@@ -99,6 +102,7 @@ const resolvers = {
             })
           })
         }).catch(e=>{
+          console.log('resolver error:',e)
           resolve({error: e.toString()})
         })
       })

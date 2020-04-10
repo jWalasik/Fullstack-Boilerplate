@@ -22,7 +22,6 @@ const FaceookSignIn: any = () => {
   const redirectUrl = `${document.location.protocol}//${document.location.host}/facebook-callback`;
 
   const code = (document.location.pathname === '/facebook-callback') ? querystring.parse(document.location.search)['?code'] : null
-
   const [loading, setLoading] = useState(false)
   const [callFacebook, {data}] = useMutation(FACEBOOK_SIGN_IN)
 
@@ -33,6 +32,7 @@ const FaceookSignIn: any = () => {
 
     callFacebook({variables: {code: code}})
     .then(res=>{
+      console.log('res:', res)
       setLoading(false)
 
       const {error, user, session} = res.data.facebookSignIn
@@ -43,10 +43,10 @@ const FaceookSignIn: any = () => {
       }
     })
     .catch(e=>{
-      alert(`backend error: ${e.toString()}`);
+      //alert(`backend error: ${e.toString()}`);
       setLoading(false)
     })
-  })
+  },[code])
 
   const handleClick = e => {
     e.preventDefault()

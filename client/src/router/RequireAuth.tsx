@@ -19,9 +19,8 @@ const RequireAuth = (props) => {
   let isAuth = false
   const {client, loading, data} = useQuery(GET_USER)
   const auth = useQuery(CHECK_AUTH)
-  
-  if(!loading) isAuth = (!!data.currentUser || !!localStorage.getItem('token'))
-  console.log(isAuth)
+  //console.log('require auth:',data)
+  //if(!loading) isAuth = (!!data.currentUser || !!localStorage.getItem('token'))
   return (!isAuth) ? (
     <Auth />
   ) : (

@@ -14,11 +14,10 @@ module.exports = class FB {
     return new Promise((resolve,reject) => {
       let url = `https://graph.facebook.com/${this.version}/${method}?client_id=${this.credentials.appId}&redirect_uri=${this.redirectUrl}&client_secret=${encodeURIComponent(this.credentials.secret)}`
 
-      
       Object.keys(params).forEach(key=>{
         url +=`&${key}=${params[key]}`
       })
-      console.log(url)
+      
       https.get(url, (res) => {
         let data = ''
         res.on('data', (d) => {

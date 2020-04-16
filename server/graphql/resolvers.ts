@@ -66,23 +66,19 @@ const resolvers = {
     facebookSignIn: (_, args, context) => {
       return new Promise((resolve, reject) => {
         const {code} = args
-        
+        console.log('ctx:', context)
         //short-term access token
         facebook.call('oauth/access_token', {code}).then(response => {
           const {access_token} = response
           facebook.call('me', {access_token}).then(response => {
-            const {name, id} = response
+            const {name, id, email} = response
             
             User.findOne({facebook: id}).then(user => {
               if(user){
-                console.log('user found: ', user)
+                const tokens = user.generateJWT()
                 resolve({
-                  name: user.name,
-                  _id: user._id,
-                  email: user.email,
-                  facebook: user.facebook
-                  
-                  //use session or jwt here
+                  accessToken: tokens.accessToken,
+                  refreshToken: tokens.refreshToken
                 })
               } else {
                 facebook.call('oauth/access_token', {
@@ -90,13 +86,19 @@ const resolvers = {
                   fb_exchange_token: access_token
                 }).then(response => {
                   const {access_token} = response
-    
-                  resolve(User.create({
+                  let tokens
+                  User.create({
                     facebook: id,
-                    email: `${name}@placeholder.fb`,
+                    email: email? email : `${name}@placeholder.fb`,
                     name: name,
                     isActive: true
-                  }))
+                  }).then(user => {
+                    tokens = user.generateJWT()
+                  })
+                  resolve({
+                    accessToken: tokens.accessToken,
+                    refreshToken: tokens.refreshToken
+                  })
                 })
               }
             })

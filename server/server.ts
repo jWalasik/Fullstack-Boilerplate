@@ -6,6 +6,7 @@ const {ApolloServer} = require('apollo-server-express') //express variant to app
 const cors = require('cors') //needed for provider authentication, i.e. facebook will block redirects
 const passport = require('passport')
 const mongoose = require('mongoose') //mongoose 
+const User = require('./models/user.ts')
 const session = require('express-session')
 const https = require('https')
 //graphql 
@@ -52,7 +53,10 @@ app.get('/logout', (req, res) => req.logout())
 const server = new ApolloServer({
   typeDefs, 
   resolvers,
-  context: ({req}) => {
+  context: async ({req}) => {
+    // const token = req.headers.authorization || ''
+    // const user = await User.getUser(token)
+    // console.log(user)
     return {
       user: req.user,
       logout: ()=>req.logout()

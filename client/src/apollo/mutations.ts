@@ -31,7 +31,7 @@ export const SIGNUP = gql`
 export const CHANGE_PASSWORD = gql`
   mutation changePassword($user: String!, $currentPass: String!, $newPass: String!) {
     changePassword(user: $user, currentPass: $currentPass, newPass: $newPass) {
-      password
+      Boolean
     }
   }
 `
@@ -39,10 +39,8 @@ export const CHANGE_PASSWORD = gql`
 export const FACEBOOK_SIGN_IN = gql`
   mutation facebookSignIn($code: String!) {
     facebookSignIn(code: $code) {
-      _id
-      facebook
-      email
-      name
+      accessToken
+      refreshToken
     }
   }
 `

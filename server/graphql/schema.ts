@@ -16,6 +16,11 @@ const typeDefs = gql`
     currentUser: User
   }
 
+  type Tokens {
+    accessToken: String
+    refreshToken: String
+  }
+
   type User {
     _id: ID!
     name: String
@@ -23,7 +28,6 @@ const typeDefs = gql`
     password: String!
     isActive: Boolean!
     role: String
-    token: String
     facebook: String
   }
 
@@ -35,7 +39,7 @@ const typeDefs = gql`
     socialAuth(provider: String!): AuthResponse
     logout: Boolean
     changePassword(user: String!, currentPass: String!, newPass: String!): User
-    facebookSignIn(code: String!): User
+    facebookSignIn(code: String!): Tokens
   }
 `
 //export default typeDefs

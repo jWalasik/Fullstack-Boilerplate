@@ -34,16 +34,35 @@ userSchema.pre('save', function() {
 })
 
 // Model Methods
+userSchema.methods.getuser = function (token) {
+  console.log('get user method: ',token)
+  const payload = jwt.decode(token)
+  
+}
 userSchema.methods.generateJWT = function () {
-  console.log('gerate JWT: ', this)
-  const today = new Date();
-  const expirationDate = new Date(today);
-  expirationDate.setDate(today.getDate() + 60);
-  return jwt.sign({
-      email: this.email || this.name,
-      id: this._id,
-      exp: (expirationDate.getTime() / 1000, 10),
-  }, process.env.JWT_SECRET);
+  const long = 60*60*24*7*1000 //7 days for refresh token
+  const short = 60*15*1000 //15min for access token
+  const accessUser = {
+    name: this.email || this.name,
+    id: this._id,
+  }
+  const accessToken = jwt.sign(
+    {user: accessUser}, 
+    process.env.JWT_ACCESS_SECRET,
+    {expiresIn: short}
+  )
+  const refreshUser = {
+    name: this.email || this.name,
+    id: this._id,
+    count: this.tokenCount
+  }
+  const refreshToken = jwt.sign(
+    {user: refreshUser},
+    process.env.JWT_REFRESH_SECRET,
+    {expiresIn: long}
+  )
+
+  return {accessToken, refreshToken}
 }
 
 module.exports = mongoose.model('User', userSchema)

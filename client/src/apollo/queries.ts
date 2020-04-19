@@ -14,6 +14,6 @@ export const GET_USER = gql`
 `
 export const GET_REF_TOKEN = gql`
   query refreshToken {
-    refreshToken
+    refreshToken @client
   }
 `

@@ -5,6 +5,8 @@ import querystring from 'querystring'
 import {useMutation, useApolloClient} from '@apollo/react-hooks'
 import {gql} from 'apollo-boost'
 
+import * as fb from '../../public/images/fb-icon.png'
+
 import {FACEBOOK_SIGN_IN} from '../apollo/mutations'
 
 interface State {
@@ -37,16 +39,18 @@ const FaceookSignIn: any = (props) => {
       setLoading(false)
 
       const {error, refreshToken, accessToken} = res.data.facebookSignIn
-      
       if (error) {
         alert(`Sign in error: ${error}`);
       } else {
         //alert(`sign in success, user: ${accessToken}, token: ${refreshToken}`);
         
-        client.writeData({data: {
-          accessToken: accessToken,
-          refreshToken: refreshToken
-        }})
+        client.writeData({
+          data: {
+            isAuth: true,
+            accessToken: accessToken,
+            refreshToken: refreshToken
+          }
+        })
         props.history.push('./')
       }
     })
@@ -67,7 +71,9 @@ const FaceookSignIn: any = (props) => {
   }
 
   return (
-    <a href='/facebook-login' onClick={handleClick}>Facebook</a>
+    <a className="login-options__link" href='/facebook-login' onClick={handleClick}>
+      {loading ? <p>loading...</p> : <img className="social-link__icon" src={fb.default} id="facebook" /> }
+    </a>
   )
 }
 

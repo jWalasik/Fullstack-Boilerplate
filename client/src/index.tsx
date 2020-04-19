@@ -4,11 +4,11 @@ import { render } from "react-dom";
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { createHttpLink } from 'apollo-link-http';
-import { ApolloLink } from 'apollo-link';
+import { ApolloLink, gql } from 'apollo-boost';
 import { ApolloProvider, useQuery } from '@apollo/react-hooks';
 import { onError } from 'apollo-link-error';
 
-import {GET_REF_TOKEN, GET_USER} from './apollo/queries'
+import { GET_REF_TOKEN} from './apollo/queries'
 
 import App from "./router";
 
@@ -17,7 +17,6 @@ const cache = new InMemoryCache()
 let jwt
 
 const authMiddleware = new ApolloLink((operation, forward)=>{
-  console.log(cache.data.data.ROOT_QUERY)
   if(jwt) {
     console.log('auth middleware:', jwt)
     operation.setContext({
@@ -48,7 +47,9 @@ const client = new ApolloClient({
 
 cache.writeData({
 	data: {
-    isAuth: !!localStorage.getItem('token')
+    isAuth: false,
+    refreshToken: '',
+    accessToken: ''
 	}
 })
 

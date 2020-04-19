@@ -16,12 +16,9 @@ const CHECK_AUTH = gql`
 `
 
 const RequireAuth = (props) => { 
-  let isAuth = false
-  const {client, loading, data} = useQuery(GET_USER)
-  const auth = useQuery(CHECK_AUTH)
-  //console.log('require auth:',data)
-  //if(!loading) isAuth = (!!data.currentUser || !!localStorage.getItem('token'))
-  return (!isAuth) ? (
+  const {client, loading, data} = useQuery(CHECK_AUTH)
+  const auth = data ? data.isAuth : false
+  return (!auth) ? (
     <Auth />
   ) : (
     <Fragment>

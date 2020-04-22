@@ -28,25 +28,25 @@ const app = express()
 app.use(cors({ origin: 'http://localhost:8080', credentials: true }))
 
 //passport config
-require('./services/passport.ts')(passport)
+// require('./services/passport.ts')(passport)
 
-app.use(session({secret: 'BADSECRET'}))
-app.use(passport.initialize())
-app.use(passport.session())
+// app.use(session({secret: 'BADSECRET'}))
+// app.use(passport.initialize())
+// app.use(passport.session())
 
-//3rd party related routes
-app.use('/auth/facebook', passport.authenticate('facebook', {scope: ['public_profile', 'email']}))
-app.use('/auth/facebook/callback', passport.authenticate('facebook'), (req, res) => {
-  res.redirect(process.env.CLIENT_URL || '')
-})
-app.get('/auth/google', passport.authenticate('google', {scope: ['profile', 'email']}))
-app.get('/auth/google/callback', passport.authenticate('google', {session: true}), (req, res) => {
-  res.redirect(process.env.CLIENT_URL || '')
-})
-app.get('/auth/twitter', passport.authenticate('twitter', {scope: ['profile']}))
-app.get('/auth/twitter/callback', passport.authenticate('twitter'), (req, res) => {
-  res.redirect(process.env.CLIENT_URL || '')
-})
+// //3rd party related routes
+// app.use('/auth/facebook', passport.authenticate('facebook', {scope: ['public_profile', 'email']}))
+// app.use('/auth/facebook/callback', passport.authenticate('facebook'), (req, res) => {
+//   res.redirect(process.env.CLIENT_URL || '')
+// })
+// app.get('/auth/google', passport.authenticate('google', {scope: ['profile', 'email']}))
+// app.get('/auth/google/callback', passport.authenticate('google', {session: true}), (req, res) => {
+//   res.redirect(process.env.CLIENT_URL || '')
+// })
+// app.get('/auth/twitter', passport.authenticate('twitter', {scope: ['profile']}))
+// app.get('/auth/twitter/callback', passport.authenticate('twitter'), (req, res) => {
+//   res.redirect(process.env.CLIENT_URL || '')
+// })
 
 app.get('/logout', (req, res) => req.logout())
 
@@ -54,11 +54,14 @@ const server = new ApolloServer({
   typeDefs, 
   resolvers,
   context: async ({req}) => {
-    // const token = req.headers.authorization || ''
-    // const user = await User.getUser(token)
-    // console.log(user)
+    const token = req.headers.authorization || ''
+    //console.log(chalk.red(util.inspect(req.headers)))
+    const user = User.getUser(req.headers)
+    console.log(user)
     return {
-      user: req.user,
+      ...req,
+      user: user,
+      token: token,
       logout: ()=>req.logout()
     }
   },
@@ -69,7 +72,7 @@ const server = new ApolloServer({
   }
 })
 
-server.applyMiddleware({app, path: '/graphql', cors: false}) //disable apollo server default cors settings
+server.applyMiddleware({app, path: '/', cors: false}) //disable apollo server default cors settings
 
 const PORT = process.env.PORT
 app.listen(PORT, ()=>{

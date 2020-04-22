@@ -7,7 +7,7 @@ import Nav from '../components/Nav'
 import {useQuery} from '@apollo/react-hooks'
 import {gql} from 'apollo-boost'
 
-import {GET_USER} from '../apollo/queries'
+import { GET_USER } from '../apollo/queries'
 
 const CHECK_AUTH = gql`
   query checkAuth {
@@ -15,10 +15,16 @@ const CHECK_AUTH = gql`
   }
 `
 
-const RequireAuth = (props) => { 
+const RequireAuth = (props) => {
   const {client, loading, data} = useQuery(CHECK_AUTH)
-  const auth = data ? data.isAuth : false
-  return (!auth) ? (
+
+  // useEffect(()=>{
+  //   console.log('load')
+  //   //try refresh token
+
+  // },[])
+
+  return (true) ? (
     <Auth />
   ) : (
     <Fragment>

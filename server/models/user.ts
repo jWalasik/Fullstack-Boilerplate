@@ -34,10 +34,27 @@ userSchema.pre('save', function() {
 })
 
 // Model Methods
-userSchema.methods.getuser = function (token) {
-  console.log('get user method: ',token)
-  const payload = jwt.decode(token)
-  
+userSchema.statics.getUser = function ({accessToken, cookie}) {
+  console.log('get user')
+  if(!accessToken){
+    return jwt.verify(cookie.replace('token=', ''), process.env.JWT_REFRESH_SECRET, (err, decoded)=>{
+      console.log('verified')
+      if(err) return new Error(err)
+      this.findById(decoded.user.id)
+        .then(user => {
+          console.log(user)
+          return user
+        })
+        .then(data=>{
+          return data
+        })
+    })
+  } else if (accessToken) {
+    return jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET, (err, decoded)=>{
+      if(err) return new Error(err)
+      return {decoded, accessToken}
+    })
+  }
 }
 userSchema.methods.generateJWT = function () {
   const long = 60*60*24*7*1000 //7 days for refresh token

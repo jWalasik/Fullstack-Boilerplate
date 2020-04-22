@@ -42,7 +42,7 @@ const FaceookSignIn: any = (props) => {
       if (error) {
         alert(`Sign in error: ${error}`);
       } else {
-        //alert(`sign in success, user: ${accessToken}, token: ${refreshToken}`);
+        //alert(`sign in success`);
         
         client.writeData({
           data: {

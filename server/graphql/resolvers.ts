@@ -13,7 +13,6 @@ const resolvers = {
 
   Mutation: {
     signup: (_, args) => {
-      console.log('user signup: ', args)
       return User.create(args)
       .then(user => {
         return user
@@ -66,16 +65,20 @@ const resolvers = {
     facebookSignIn: (_, args, context) => {
       return new Promise((resolve, reject) => {
         const {code} = args
-        console.log('ctx:', context)
-        //short-term access token
         facebook.call('oauth/access_token', {code}).then(response => {
           const {access_token} = response
           facebook.call('me', {access_token}).then(response => {
             const {name, id, email} = response
-            
+            let tokens
+
             User.findOne({facebook: id}).then(user => {
               if(user){
                 const tokens = user.generateJWT()
+                
+                context.res.cookie('token', tokens.refreshToken, {
+                  httpOnly: true,
+                  maxAge: 1000*60*60*24*31
+                })
                 resolve({
                   accessToken: tokens.accessToken,
                   refreshToken: tokens.refreshToken
@@ -85,8 +88,7 @@ const resolvers = {
                   grant_type: 'fb_exchange_token',
                   fb_exchange_token: access_token
                 }).then(response => {
-                  const {access_token} = response
-                  let tokens
+                  console.log('facebook response', response)
                   User.create({
                     facebook: id,
                     email: email? email : `${name}@placeholder.fb`,
@@ -101,13 +103,17 @@ const resolvers = {
                   })
                 })
               }
-            })
+            })            
           })
         }).catch(e=>{
           console.log('resolver error:',e)
           resolve({error: e.toString()})
         })
       })
+    },
+    silentRefresh:(_, args, context) => {
+      console.log(context)
+      return 'random string'
     }
   }
 }

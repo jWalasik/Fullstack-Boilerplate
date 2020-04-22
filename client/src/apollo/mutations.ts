@@ -44,3 +44,9 @@ export const FACEBOOK_SIGN_IN = gql`
     }
   }
 `
+
+export const SILENT_REFRESH = gql`
+  mutation silentRefresh {
+    accessToken
+  }
+`

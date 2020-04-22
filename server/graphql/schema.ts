@@ -40,6 +40,7 @@ const typeDefs = gql`
     logout: Boolean
     changePassword(user: String!, currentPass: String!, newPass: String!): User
     facebookSignIn(code: String!): Tokens
+    silentRefresh: Tokens
   }
 `
 //export default typeDefs

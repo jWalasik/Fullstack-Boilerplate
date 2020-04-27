@@ -20,19 +20,24 @@ const resolvers = {
       .catch(err=>err)},
 
     login: (_, args, context) => {
-      console.log('login context:', context)
+      console.log('login context:', context.headers)
       return User
       .findOne({$or:[
         {email: args.user},
         {name: args.user}, //to-do: change argument to neutral
         
-      ]}).then(user => {
+      ]}).then(async user => {
         const match = bcrypt.compareSync(args.password, user.password)
         if(!match){
           return new Error('Passwords not matching!')
         }
         //return JWT
-        user.token = user.generateJWT()
+        const tokens = await user.generateJWT()
+        context.res.cookie('token', tokens.refreshToken, {
+          httpOnly: true,
+          maxAge: 1000*60*60*24*31
+        })
+        user.accessToken = tokens.accessToken
         return user
       })
       .catch(err=> {
@@ -71,18 +76,18 @@ const resolvers = {
             const {name, id, email} = response
             let tokens
 
-            User.findOne({facebook: id}).then(user => {
+            User.findOne({facebook: id}).then(async user => {
               if(user){
-                const tokens = user.generateJWT()
+                tokens = await user.generateJWT()
                 
                 context.res.cookie('token', tokens.refreshToken, {
                   httpOnly: true,
                   maxAge: 1000*60*60*24*31
                 })
-                resolve({
-                  accessToken: tokens.accessToken,
-                  refreshToken: tokens.refreshToken
-                })
+                user.accessToken = tokens.accessToken
+                resolve(
+                  user
+                )
               } else {
                 facebook.call('oauth/access_token', {
                   grant_type: 'fb_exchange_token',
@@ -94,12 +99,16 @@ const resolvers = {
                     email: email? email : `${name}@placeholder.fb`,
                     name: name,
                     isActive: true
-                  }).then(user => {
-                    tokens = user.generateJWT()
-                  })
-                  resolve({
-                    accessToken: tokens.accessToken,
-                    refreshToken: tokens.refreshToken
+                  }).then(async user => {
+                    tokens = await user.generateJWT()
+                    context.res.cookie('token', tokens.refreshToken, {
+                      httpOnly: true,
+                      maxAge: 1000*60*60*24*31
+                    })
+                    user.accessToken = tokens.accessToken
+                    resolve(
+                      user
+                    )
                   })
                 })
               }
@@ -111,9 +120,9 @@ const resolvers = {
         })
       })
     },
-    silentRefresh:(_, args, context) => {
-      console.log(context)
-      return 'random string'
+    refreshToken: async (_,args, context) => {
+      const cookie = context.headers.cookie.replace('token=', '')
+      
     }
   }
 }

@@ -6,14 +6,13 @@ export const CHECK_AUTH = gql`
   }
 `
 export const GET_USER = gql`
-  query currentUser {
-    currentUser {
-      name
-    }
+  query getUser {
+    name,accessToken,email @client
   }
 `
-export const GET_REF_TOKEN = gql`
+
+export const REFRESH_TOKEN = gql`
   query refreshToken {
-    refreshToken @client
+    refreshToken
   }
 `

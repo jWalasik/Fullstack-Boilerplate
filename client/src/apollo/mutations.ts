@@ -12,7 +12,7 @@ export const LOGIN = gql`
       email
       _id
       isActive
-      token
+      accessToken
     }
   }
 `
@@ -39,14 +39,19 @@ export const CHANGE_PASSWORD = gql`
 export const FACEBOOK_SIGN_IN = gql`
   mutation facebookSignIn($code: String!) {
     facebookSignIn(code: $code) {
+      email
+      name
+      facebook
+      isActive
       accessToken
-      refreshToken
     }
   }
 `
 
-export const SILENT_REFRESH = gql`
-  mutation silentRefresh {
-    accessToken
+export const REFRESH_TOKEN = gql`
+  mutation refreshToken {
+    refreshToken {
+      accessToken
+    }
   }
 `

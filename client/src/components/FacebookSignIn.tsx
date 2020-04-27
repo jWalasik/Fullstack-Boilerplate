@@ -38,17 +38,18 @@ const FaceookSignIn: any = (props) => {
     .then(res=>{
       setLoading(false)
 
-      const {error, refreshToken, accessToken} = res.data.facebookSignIn
+      const {error, name, email, accessToken} = res.data.facebookSignIn
       if (error) {
         alert(`Sign in error: ${error}`);
       } else {
         //alert(`sign in success`);
-        
+        console.log(res.data)
         client.writeData({
           data: {
             isAuth: true,
-            accessToken: accessToken,
-            refreshToken: refreshToken
+            name: name,
+            email: email,
+            accessToken: accessToken
           }
         })
         props.history.push('./')

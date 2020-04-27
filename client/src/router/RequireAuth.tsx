@@ -4,27 +4,23 @@ import {withRouter, useHistory} from 'react-router-dom'
 
 import Auth from '../pages/Auth'
 import Nav from '../components/Nav'
-import {useQuery} from '@apollo/react-hooks'
+import {useQuery, useMutation} from '@apollo/react-hooks'
 import {gql} from 'apollo-boost'
 
 import { GET_USER } from '../apollo/queries'
-
-const CHECK_AUTH = gql`
-  query checkAuth {
-    isAuth @client
-  }
-`
+import { REFRESH_TOKEN } from '../apollo/mutations'
 
 const RequireAuth = (props) => {
-  const {client, loading, data} = useQuery(CHECK_AUTH)
+  const {client, loading, data} = useQuery(GET_USER)
+  const [silentRefresh, refreshData] = useMutation(REFRESH_TOKEN)
 
-  // useEffect(()=>{
-  //   console.log('load')
-  //   //try refresh token
+  useEffect(()=>{
+    silentRefresh().then(res=> {
+      console.log('silent ref')
+      console.log(res)})
+  }, [])
 
-  // },[])
-
-  return (true) ? (
+  return (data && !data.isAuth) ? (
     <Auth />
   ) : (
     <Fragment>

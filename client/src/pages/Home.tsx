@@ -1,9 +1,17 @@
 import * as React from 'react'
+import {useQuery} from '@apollo/react-hooks'
+import {GET_USER} from '../apollo/queries'
 
-const Home = () => (
-  <main>
-    <h1>Home</h1>
-  </main>
-)
+const Home = () => {
+  const {client, loading, data} = useQuery(GET_USER)
+  console.log('home',loading, data)
 
-export default  Home
+  return (
+    <main>
+      <h1>Home</h1>
+      <p>Welcome {data.name || data.email}</p>
+    </main>
+  )
+}
+
+export default Home

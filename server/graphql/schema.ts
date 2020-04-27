@@ -22,13 +22,14 @@ const typeDefs = gql`
   }
 
   type User {
-    _id: ID!
+    _id: ID
     name: String
     email: String
-    password: String!
-    isActive: Boolean!
+    password: String
+    isActive: Boolean
     role: String
     facebook: String
+    accessToken: String
   }
 
   type Mutation {
@@ -39,8 +40,8 @@ const typeDefs = gql`
     socialAuth(provider: String!): AuthResponse
     logout: Boolean
     changePassword(user: String!, currentPass: String!, newPass: String!): User
-    facebookSignIn(code: String!): Tokens
-    silentRefresh: Tokens
+    facebookSignIn(code: String!): User
+    refreshToken: User
   }
 `
 //export default typeDefs

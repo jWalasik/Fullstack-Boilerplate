@@ -35,15 +35,13 @@ userSchema.pre('save', function() {
 
 // Model Methods
 userSchema.statics.getUser = function ({accessToken, cookie}) {
-  console.log('get user')
   if(!accessToken){
-    return jwt.verify(cookie.replace('token=', ''), process.env.JWT_REFRESH_SECRET, (err, decoded)=>{
-      console.log('verified')
+    return jwt.verify(cookie.replace('token=', ''), process.env.JWT_REFRESH_SECRET, async (err, decoded)=>{
       if(err) return new Error(err)
-      this.findById(decoded.user.id)
+      await this.findById(decoded.user.id)
         .then(user => {
-          console.log(user)
-          return user
+          //const tokens = user.generateJWT()
+          return {user}
         })
         .then(data=>{
           return data
@@ -56,9 +54,9 @@ userSchema.statics.getUser = function ({accessToken, cookie}) {
     })
   }
 }
-userSchema.methods.generateJWT = function () {
-  const long = 60*60*24*7*1000 //7 days for refresh token
-  const short = 60*15*1000 //15min for access token
+userSchema.methods.generateJWT = async function () {
+  const long = new Date().getTime() + 60*60*24*7*1000 //7 days for refresh token
+  const short = new Date().getTime() + 60*15*1000 //15min for access token
   const accessUser = {
     name: this.email || this.name,
     id: this._id,

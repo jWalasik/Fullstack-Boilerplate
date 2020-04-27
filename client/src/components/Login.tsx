@@ -2,7 +2,7 @@ import * as React from 'react';
 import {useState} from 'react'
 import { useHistory } from "react-router-dom";
 import {gql} from 'apollo-boost'
-import {useMutation} from '@apollo/react-hooks'
+import {useMutation, useApolloClient} from '@apollo/react-hooks'
 import Socials from './Socials'
 
 const _login = gql`
@@ -12,13 +12,14 @@ const _login = gql`
       email
       _id
       isActive
-      token
+      accessToken
     }
   }
 `
 
 const Login = (props) => {
   let history = useHistory();
+  const client = useApolloClient()
   const [password, setPassword] = useState()
   const [login, setLogin] = useState() 
 
@@ -27,9 +28,17 @@ const Login = (props) => {
   const handleSubmit = e => {
     e.preventDefault()
     submitLogin({variables: {login, password}})
-      .then(res=> {
-        console.log(res)
-        localStorage.setItem("token", res.data.login.token)
+      .then(payload => {
+        console.log(payload.data.login)
+        const {name, email, accessToken} = payload.data.login
+        client.writeData({
+          data: {
+            isAuth: true,
+            name: name,
+            email: email,
+            accessToken: accessToken
+          }
+        })
         history.push('/')
       })
       .catch(err=>console.log)

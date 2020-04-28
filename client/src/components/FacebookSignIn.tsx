@@ -56,7 +56,6 @@ const FaceookSignIn: any = (props) => {
       }
     })
     .catch(e=>{
-      //alert(`backend error: ${e.toString()}`);
       setLoading(false)
     })
   },[code])

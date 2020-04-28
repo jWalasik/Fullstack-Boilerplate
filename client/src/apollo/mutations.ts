@@ -51,6 +51,8 @@ export const FACEBOOK_SIGN_IN = gql`
 export const REFRESH_TOKEN = gql`
   mutation refreshToken {
     refreshToken {
+      email
+      name
       accessToken
     }
   }

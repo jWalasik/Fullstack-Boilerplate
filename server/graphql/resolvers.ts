@@ -2,6 +2,7 @@ const User = require('../models/user.ts')
 const bcrypt = require('bcrypt')
 const FB = require('../services/facebook.ts')
 const session = require('express-session')
+const jwt = require('jsonwebtoken')
 
 const facebook = new FB()
 
@@ -122,7 +123,30 @@ const resolvers = {
     },
     refreshToken: async (_,args, context) => {
       const cookie = context.headers.cookie.replace('token=', '')
-      
+      if(!cookie) return new Error('Refresh token invalid')
+
+      const timestamp = new Date().getTime()
+      return jwt.verify(cookie, process.env.JWT_REFRESH_SECRET, (err, decoded)=>{
+        if(err){
+          console.log(err)
+          return err
+        }
+        if(timestamp-decoded>=0){
+          return new Error('Refresh token expired')
+        }
+        //get user and update tokens
+        return User.findById(decoded.user.id)
+          .then(async user=>{
+             const tokens = await user.generateJWT()
+             context.res.cookie('token', tokens.refreshToken, {
+              httpOnly: true,
+              maxAge: 1000*60*60*24*31
+            })
+             user.accessToken = tokens.accessToken
+             return user
+          })
+          .catch(err=> err)
+      })
     }
   }
 }

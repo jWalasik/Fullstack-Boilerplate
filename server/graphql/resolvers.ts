@@ -17,8 +17,15 @@ const resolvers = {
       .then(user => {
         return user
       })
-      .catch(err=>err)},
+      .catch(err=>err)
+    },
+    resetPassword: (_, args, context) => {
+      User.findOne({email: args.email}).then(user=>{
+        if(!user) return 'Invalid email address'
 
+        //send email to the user
+      }).catch(err=>err)
+    },
     login: (_, args, context) => {
       console.log('login context:', context.headers)
       return User
@@ -61,10 +68,11 @@ const resolvers = {
         const match = bcrypt.compareSync(args.currentPass, user.password)
         if(match) {
           const newPassHashed = bcrypt.hashSync(this.password, 12)
-          return user.update({password: newPassHashed})
+          user.update({password: newPassHashed})
+          return 'Password has been updated'
         }
         if(!match) {
-          console.log('Password not matching')
+          return 'Password not matching'
         }
       })
     },

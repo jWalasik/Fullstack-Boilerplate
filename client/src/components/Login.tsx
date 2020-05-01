@@ -20,8 +20,8 @@ const _login = gql`
 const Login = (props) => {
   let history = useHistory();
   const client = useApolloClient()
-  const [password, setPassword] = useState()
-  const [login, setLogin] = useState() 
+  const [password, setPassword] = useState('')
+  const [login, setLogin] = useState('') 
 
   const [submitLogin, {data}] = useMutation(_login)
 

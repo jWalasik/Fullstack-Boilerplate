@@ -33,11 +33,9 @@ const typeDefs = gql`
   type Mutation {
     login(user: String!, password: String!): User
     signup(email: String!, password: String!, name: String): User
-    authFacebook(input: AuthInput!): AuthResponse
-    authGoogle(input: AuthInput!): AuthResponse
-    socialAuth(provider: String!): AuthResponse
+    resetPassword(email: String!): String
     logout: Boolean
-    changePassword(user: String!, currentPass: String!, newPass: String!): User
+    changePassword(user: String!, currentPass: String!, newPass: String!): String
     facebookSignIn(code: String!): User
     refreshToken: User
   }

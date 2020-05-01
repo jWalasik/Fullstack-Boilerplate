@@ -8,8 +8,6 @@ const Nav = (props) => {
   const client = useApolloClient()
   const handleLogout = (e) => {
     logout().then(res=> {
-      console.log(client)
-      client.interval = clearInterval()
       client.resetStore()
     }).then(()=>{
       props.history.push('/')

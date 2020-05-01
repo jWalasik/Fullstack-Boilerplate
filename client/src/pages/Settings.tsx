@@ -7,8 +7,8 @@ import { CHANGE_PASSWORD } from '../apollo/mutations'
 const Settings = () => {
   const {client, loading, data} = useQuery(GET_USER)
   const [submitPassword, {}] = useMutation(CHANGE_PASSWORD)
-  const [currentPass, setCurrPass] = useState(),
-        [newPass, setNewPass] = useState();
+  const [currentPass, setCurrPass] = useState(''),
+        [newPass, setNewPass] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault()    

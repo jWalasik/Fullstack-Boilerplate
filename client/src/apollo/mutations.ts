@@ -36,6 +36,12 @@ export const CHANGE_PASSWORD = gql`
   }
 `
 
+export const RESET_PASSWORD = gql`
+  mutation resetPassword($email: String!) {
+    resetPassword(email: $email)
+  }
+`
+
 export const FACEBOOK_SIGN_IN = gql`
   mutation facebookSignIn($code: String!) {
     facebookSignIn(code: $code) {

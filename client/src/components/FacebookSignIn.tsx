@@ -3,7 +3,6 @@ import {useEffect, useState} from 'react'
 import {withRouter} from 'react-router-dom'
 import querystring from 'querystring'
 import {useMutation, useApolloClient} from '@apollo/react-hooks'
-import {gql} from 'apollo-boost'
 
 import * as fb from '../../public/images/fb-icon.png'
 
@@ -31,13 +30,11 @@ const FaceookSignIn: any = (props) => {
 
   useEffect(()=>{
     if(!code) return
-    
-    setLoading(true)
 
     callFacebook({variables: {code: code}})
     .then(res=>{
       setLoading(false)
-
+      
       const {error, name, email, accessToken} = res.data.facebookSignIn
       if (error) {
         alert(`Sign in error: ${error}`);
@@ -46,21 +43,25 @@ const FaceookSignIn: any = (props) => {
         console.log(res.data)
         client.writeData({
           data: {
-            isAuth: true,
-            name: name,
-            email: email,
-            accessToken: accessToken
+            user: {
+              name: name,
+              email: email,
+              accessToken: accessToken,
+              __typename: 'User'
+            }
           }
         })
-        props.history.push('./')
+        props.history.push('/')
       }
     })
     .catch(e=>{
+      console.log(e)
       setLoading(false)
     })
-  },[code])
+  },[])
 
   const handleClick = e => {
+    setLoading(true)
     e.preventDefault()
     window.location.href = `https://www.facebook.com/v2.9/dialog/oauth?client_id=${appId}&redirect_uri=${encodeURIComponent(redirectUrl)}`;
   }

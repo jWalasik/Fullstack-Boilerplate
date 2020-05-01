@@ -8,37 +8,42 @@ import {useQuery, useMutation} from '@apollo/react-hooks'
 
 import { GET_USER } from '../apollo/queries'
 import { REFRESH_TOKEN } from '../apollo/mutations'
+import { setAutoRefresh} from '../utils/auth'
 
-const RequireAuth = (props) => {
-  let isAuth = false
-  const {client, loading, data} = useQuery(GET_USER)
+const RequireAuth = (props) => {  
+  const {client, loading, data} = useQuery(GET_USER,{fetchPolicy: 'cache-only'})
   const [silentRefresh, refreshData] = useMutation(REFRESH_TOKEN)
 
-  useEffect(()=>{
-    console.log(data)
-    if(data.accessToken) {
-      isAuth = true
-      return
-    }
-    silentRefresh().then(res=> {
-      const {name, email, accessToken} = res.data.refreshToken
-      client.writeData({
-        data: {
-          isAuth: true,
-          name: name,
-          email: email,
-          accessToken: accessToken
-        }
-      })
-      isAuth = true
-    })
-    .catch(err => {
-      console.log(err)
-      return err
-    })
-  }, [])
+  let isAuth = !!data.user.accessToken
 
-  return (isAuth) ? (
+  //try to reach refresh token endpoint once
+  useEffect(()=>{
+    if(!data.accessToken) {
+      silentRefresh().then(res=> {
+        console.log('silent refresh')
+        const {name, email, accessToken} = res.data.refreshToken
+        client.writeData({
+          data: {
+            user: {
+              name: name,
+              email: email,
+              accessToken: accessToken,
+              __typename: 'User'
+            }
+          }
+        })
+        setAutoRefresh(client, silentRefresh)
+      })
+      .catch(err => {
+        console.log('refresh error')
+        console.log(err)
+        return err
+      })
+    }
+    
+  }, [])
+  
+  return (!isAuth) ? (
     <Auth />
   ) : (
     <Fragment>

@@ -8,7 +8,6 @@ const facebook = new FB()
 
 const resolvers = {
   Query: {
-    getUsers: async () => await User.find({}).exec(),
     currentUser: (parent, args, context) => context.user
   },
 
@@ -49,6 +48,7 @@ const resolvers = {
     logout: (_, args, context) => {
       console.log('loggin out...')
       context.user = {}
+      //if you want to prevent login with refresh token you need to blacklist it on User model
       context.logout()
     },
     changePassword: (_, args, context) => {
@@ -122,9 +122,12 @@ const resolvers = {
       })
     },
     refreshToken: async (_,args, context) => {
-      const cookie = context.headers.cookie.replace('token=', '')
-      if(!cookie) return new Error('Refresh token invalid')
-
+      console.log('silent refresh')
+      let {cookie} = context.headers
+      if(!cookie) {
+        console.log('no cookie for you')
+        throw new Error('Refresh token invalid')}
+      cookie = cookie.replace('token=', '')
       const timestamp = new Date().getTime()
       return jwt.verify(cookie, process.env.JWT_REFRESH_SECRET, (err, decoded)=>{
         if(err){

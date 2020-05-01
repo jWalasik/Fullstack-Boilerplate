@@ -7,6 +7,10 @@ export const CHECK_AUTH = gql`
 `
 export const GET_USER = gql`
   query getUser {
-    name,accessToken,email @client
+    user @client {
+      name
+      email
+      accessToken
+    }
   }
 `

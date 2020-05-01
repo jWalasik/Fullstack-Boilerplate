@@ -1,19 +1,18 @@
 import * as React from 'react'
+import {useMutation} from '@apollo/react-hooks'
 import FacebookSignIn from './FacebookSignIn'
-
-import {gql} from 'apollo-boost'
-
+import { REFRESH_TOKEN } from "../apollo/mutations";
 import * as google from '../../public/images/google-icon.png'
 import * as fb from '../../public/images/fb-icon.png'
 import * as twitter from '../../public/images/twitter-icon.png'
 
 const Socials = () => {
-
+  const [silentRefresh, refreshData] = useMutation(REFRESH_TOKEN)
   return (
     <div>
       <ul className="login-options">
         <li>
-          <FacebookSignIn />
+          <FacebookSignIn silentRefresh={silentRefresh} />
         </li>
 
         <li>

@@ -33,10 +33,12 @@ const Login = (props) => {
         const {name, email, accessToken} = payload.data.login
         client.writeData({
           data: {
-            isAuth: true,
-            name: name,
-            email: email,
-            accessToken: accessToken
+            user: {
+              name: name,
+              email: email,
+              accessToken: accessToken,
+              __typename: 'User'
+            }
           }
         })
         history.push('/')

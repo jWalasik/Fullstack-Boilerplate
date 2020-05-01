@@ -1,15 +1,12 @@
 import * as React from "react";
 import { render } from "react-dom";
 
-import Cookies from 'js-cookie'
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import { ApolloLink, gql } from 'apollo-boost';
-import { ApolloProvider, useQuery } from '@apollo/react-hooks';
-import {graphql, Query} from 'react-apollo'
-import {AuthLink, errorLink, serverLink} from './apollo/links'
-
-import {REFRESH_TOKEN} from './apollo/queries'
+import { ApolloLink } from 'apollo-boost';
+import { ApolloProvider } from '@apollo/react-hooks';
+import { AuthLink, errorLink, serverLink } from './apollo/links'
+import { defaultState } from './apollo/store'
 
 import App from "./router";
 
@@ -19,6 +16,7 @@ const authLink = new AuthLink()
 const client = new ApolloClient({
   link: ApolloLink.from([errorLink, authLink, serverLink]),
 	cache: cache,
+	resolvers: {}, //graphql throws error on client queries if undefined
 	defaultOptions: {
 		watchQuery: {
 			fetchPolicy: 'cache-and-network'
@@ -28,24 +26,12 @@ const client = new ApolloClient({
 
 authLink.injectClient(client)
 
-const defaultData = {
-	isAuth: false,
-	name: null,
-	email: null,
-	accessToken: null
-}
 client.onResetStore(():any => {
-  cache.writeData({data : defaultData });
+  cache.writeData({data : defaultState });
 });
 //initialize default state
 cache.writeData({
-	data: {
-		isAuth: false,
-		name: null,
-		email: null,
-		accessToken: null,
-		refreshToken: null
-	}
+	data: defaultState
 })
 
 render(

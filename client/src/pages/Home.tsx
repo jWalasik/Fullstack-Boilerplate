@@ -4,12 +4,10 @@ import {GET_USER} from '../apollo/queries'
 
 const Home = () => {
   const {client, loading, data} = useQuery(GET_USER)
-  console.log('home',loading, data)
-
   return (
     <main>
       <h1>Home</h1>
-      <p>Welcome {data.name || data.email}</p>
+      {loading ? null :<p>Welcome {data.user.name || data.user.email}</p>}
     </main>
   )
 }

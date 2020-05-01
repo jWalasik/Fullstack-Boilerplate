@@ -12,42 +12,19 @@ export class AuthLink extends ApolloLink {
     this.client = client
   }
 
-  request(operation: Operation, forward: NextLink): any {
+  request(operation: Operation, forward: NextLink): any{
     const {token} = operation.getContext()
-    const {accessToken} = this.client.readQuery({query:GET_USER})
-    //console.log('access',accessToken)
+    //let {accessToken} = this.client.readQuery({query:GET_USER})
+    const accessToken = 0
     if(accessToken) {
-      console.log('access token detected set to header')      
+      console.log('access token detected set to header', accessToken)      
       operation.setContext(({headers = {}} : any) => ({
         headers:{
           ...headers,
-          authorization: token ? `Bearer ${accessToken}` : undefined
+          authorization: accessToken ? `Bearer ${accessToken}` : undefined
         }
       }))
-    } 
-      console.log('no access token try refreshing ')
-      // return new Observable(observer => {
-      //   let sub, innerSub
-      //   try {
-      //     sub = forward(operation).subscribe({
-      //       next: observer.next.bind(observer),
-      //       complete: observer.complete.bind(observer),
-      //       error: networkError => {
-      //        console.log('network error')
-      //       }
-      //     })
-      //   } catch (err) {
-      //     console.log('catched error',err)
-         
-      //     observer.error(err)
-      //   }
-      //   console.log(sub)
-      //   return ()=>{
-      //     if(sub) sub.unsuscribe()
-      //     if(innerSub) innerSub.unsuscribe()
-      //   }
-      // })
-    
+    }    
     return forward(operation)
   }
 }

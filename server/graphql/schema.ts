@@ -11,8 +11,6 @@ const typeDefs = gql`
   }
 
   type Query {
-    getUsers: [User]
-    getUser(id: ID!): User
     currentUser: User
   }
 

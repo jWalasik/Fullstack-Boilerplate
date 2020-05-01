@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { LOGOUT } from "../apollo/mutations";
 import { useQuery,useMutation, useApolloClient } from "@apollo/react-hooks";
 
@@ -7,8 +7,14 @@ const Nav = (props) => {
   const [logout, {data}] = useMutation(LOGOUT)
   const client = useApolloClient()
   const handleLogout = (e) => {
-    localStorage.removeItem('token')
-    logout().then(res=> client.resetStore())
+    logout().then(res=> {
+      console.log(client)
+      client.interval = clearInterval()
+      client.resetStore()
+    }).then(()=>{
+      props.history.push('/')
+    })
+    
   }
   return (
       <nav className="menu">
@@ -29,4 +35,4 @@ const Nav = (props) => {
   )
 }
 
-export default Nav;
+export default withRouter(Nav);

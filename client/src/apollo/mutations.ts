@@ -38,17 +38,13 @@ export const CHANGE_PASSWORD = gql`
 
 export const NEW_PASSWORD = gql`
   mutation newPassword($newPassword: String!, $resetToken: String!){
-    newPassword(newPassword: $newPassword, resetToken: $resetToken) {
-      String
-    }
+    newPassword(newPassword: $newPassword, resetToken: $resetToken)
   }
 `
 
 export const RESET_PASSWORD = gql`
   mutation resetPassword($email: String!) {
-    resetPassword(email: $email){
-      String
-    }
+    resetPassword(email: $email)
   }
 `
 

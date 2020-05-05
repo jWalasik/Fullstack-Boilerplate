@@ -21,14 +21,15 @@ const resolvers = {
       .catch(err=>err)
     },
     resetPassword: (_, args, context) => {
+      console.log('reset')
       return User.findOne({email: args.email}).then(user=>{
         if(!user) return 'No account with that email found.'
-        crypto.randomBytes(32, (err, buffer) => {
+        return crypto.randomBytes(32, (err, buffer) => {
           const token = buffer.toString('hex')
           if(err) throw err
           user.resetToken = token
           user.resetTokenExp = Date.now() + 3600000
-          user.save().then(()=>{
+          return user.save().then(()=>{
             console.log(args.email)
             const message = {
               from: `jacekwalasik89@gmail.com`,
@@ -36,34 +37,33 @@ const resolvers = {
               subject: `Password reset request`,
               text: `
               <p>You requested a password reset</p>
-              <p>Click this <a href="http://localhost:8080/reset/${token}">link</a> to set a new password.</p>
+              <p>Click this <a href="http://localhost:8080/reset${token}">link</a> to set a new password.</p>
               `
             }
             mailgun.messages().send(message, function (error, body) {
               console.log(body);
-            });
-          })
-          
-          // transporter.sendMail().then(res=>{
-          //   console.log('email sent',res)
-          //   return 'Password reset request was sent to email address.'
-          // }).catch(err=>console.log(err))
-
-          
+              if(error) throw error
+            })
+          })          
         })
+        
+      })
+      .then(()=> {
+        console.log('success')
+        return 'Password reset email was sent, it should arrive shortly. Make sure to check spam folder.'
       })
       .catch(err=>err)
     },
     newPassword: (_, args, context) => {
       console.log(args)
-      const {password, resetToken} = args
-      User.findOne({resetToken: resetToken}).then(user=>{
+      const {newPassword, resetToken} = args
+      return User.findOne({resetToken: resetToken}).then(user=>{
         console.log(user)
         if(user.resetTokenExp < Date.now()) {
           return 'Reset token has expired!'
         }
-        const newPassword = bcrypt.hashSync(password, 12)
-        user.update({password: newPassword})
+        const password = bcrypt.hashSync(newPassword, 12)
+        user.update({password: password})
         return 'Succesfully set up new password'
       })
     },

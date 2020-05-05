@@ -12,11 +12,10 @@ export class AuthLink extends ApolloLink {
     this.client = client
   }
 
-  request(operation: Operation, forward: NextLink): any{
-    const {token} = operation.getContext()
-    console.log(token)
-    //let {accessToken} = this.client.readQuery({query:GET_USER})
-    const accessToken = 0
+   request(operation: Operation, forward: NextLink): any{
+    console.log(this.client)
+    let {accessToken} = this.client.readQuery({query:GET_USER})
+    //const accessToken = 0
     if(accessToken) {
       console.log('access token detected set to header', accessToken)      
       operation.setContext(({headers = {}} : any) => ({

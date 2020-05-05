@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react'
 import {withRouter} from 'react-router-dom'
 import querystring from 'querystring'
 import {useMutation, useApolloClient} from '@apollo/react-hooks'
-
+import {refreshToken} from '../index'
 import * as fb from '../../public/images/fb-icon.png'
 
 import {FACEBOOK_SIGN_IN} from '../apollo/mutations'
@@ -40,17 +40,7 @@ const FaceookSignIn: any = (props) => {
         alert(`Sign in error: ${error}`);
       } else {
         //alert(`sign in success`);
-        console.log(res.data)
-        client.writeData({
-          data: {
-            user: {
-              name: name,
-              email: email,
-              accessToken: accessToken,
-              __typename: 'User'
-            }
-          }
-        })
+        refreshToken()
         props.history.push('/')
       }
     })
@@ -66,10 +56,10 @@ const FaceookSignIn: any = (props) => {
     window.location.href = `https://www.facebook.com/v2.9/dialog/oauth?client_id=${appId}&redirect_uri=${encodeURIComponent(redirectUrl)}`;
   }
 
-  const redirect = () => {
-    console.log('redirect')
-    this.props.history.push('/')
-  }
+  // const redirect = () => {
+  //   console.log('redirect')
+  //   this.props.history.push('/')
+  // }
 
   return (
     <a className="login-options__link" href='/facebook-login' onClick={handleClick}>

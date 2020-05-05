@@ -1,26 +1,25 @@
 import * as React from 'react'
 import {BrowserRouter, Switch, Route} from 'react-router-dom'
 
-import AddRecipe from '../pages/AddRecipe'
-import BrowseRecipe from '../pages/BrowseRecipes'
+import {PublicRoute, PrivateRoute} from './Routes'
+
+import Auth from '../pages/Auth'
 import Home from '../pages/Home'
-import Planner from '../pages/Home'
-import RequireAuth from './RequireAuth'
 import Settings from '../pages/Settings'
-import ShoppingList from '../pages/ShoppingList'
+import SetPassword from '../pages/SetPassword'
+import FourOhFour from '../pages/404'
 
 export default () => {
   return (
-  <BrowserRouter>
-    <RequireAuth>
+    <BrowserRouter history>
       <Switch>
-      <Route exact path="/" component={Home} />
-      <Route exact path="/add-recipe" component={AddRecipe} />
-      <Route exact path="/browse-recipes" component={BrowseRecipe} />
-      <Route exact path="/meal-planner" component={Planner} />
-      <Route exact path="/settings" component={Settings} />
-      <Route exact path="/shop-list" component={ShoppingList} />      
+      <PublicRoute exact path='/' component={Auth}/>
+      <PublicRoute path='/reset:token' component={SetPassword} />
+
+      <PrivateRoute exact path="/home" component={Home} />
+      <PrivateRoute exact path="/settings" component={Settings} />
+
+      <Route component={FourOhFour} />
     </Switch>
-    </RequireAuth> 
   </BrowserRouter>
 )}

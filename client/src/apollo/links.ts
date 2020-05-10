@@ -13,15 +13,13 @@ export class AuthLink extends ApolloLink {
   }
 
    request(operation: Operation, forward: NextLink): any{
-    console.log(this.client)
-    let {accessToken} = this.client.readQuery({query:GET_USER})
-    //const accessToken = 0
-    if(accessToken) {
-      console.log('access token detected set to header', accessToken)      
+    const {user} = this.client.readQuery({query: GET_USER})
+    
+    if(user.accessToken) {      
       operation.setContext(({headers = {}} : any) => ({
         headers:{
           ...headers,
-          authorization: accessToken ? `Bearer ${accessToken}` : undefined
+          authorization: user.accessToken ? `Bearer ${user.accessToken}` : undefined
         }
       }))
     }    

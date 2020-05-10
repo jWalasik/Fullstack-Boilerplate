@@ -9,10 +9,7 @@ const Nav = (props) => {
   const handleLogout = (e) => {
     logout().then(res=> {
       client.resetStore()
-    }).then(()=>{
-      props.history.push('/')
-    })
-    
+    })    
   }
   return (
       <nav className="menu">

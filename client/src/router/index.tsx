@@ -13,13 +13,15 @@ export default () => {
   return (
     <BrowserRouter history>
       <Switch>
-      <PublicRoute exact path='/' component={Auth}/>
-      <PublicRoute path='/reset:token' component={SetPassword} />
-
       <PrivateRoute exact path="/home" component={Home} />
       <PrivateRoute exact path="/settings" component={Settings} />
+
+      <PublicRoute exact path='/reset:token' component={SetPassword} />
+      
+      <PublicRoute exact path='/:callback?' component={Auth}/>
 
       <Route component={FourOhFour} />
     </Switch>
   </BrowserRouter>
-)}
+  )
+}

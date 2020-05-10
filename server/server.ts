@@ -53,19 +53,10 @@ app.get('/logout', (req, res) => req.logout())
 const server = new ApolloServer({
   typeDefs, 
   resolvers,
-  context: async ({req,res}) => {
-    
-    const token = req.headers.authorization || null
-    
-    //console.log(chalk.green(util.inspect(req.headers)))
-    //const user = User.getUser(req.headers)
-   
+  context: ({req,res}) => {   
     return req
   },
   playground: {
-    settings: {
-      'request.credentials': 'include'
-    }
   }
 })
 

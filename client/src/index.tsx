@@ -6,24 +6,22 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloLink } from 'apollo-boost';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { AuthLink, errorLink, serverLink } from './apollo/links'
-import { defaultState } from './apollo/store'
+import { defaultState, setAutorefresh } from './apollo/store'
 
 import App from "./router";
 import { REFRESH_TOKEN } from "./apollo/mutations";
 
+export let isAuthenticated
+export const setAuth = () => {
+	isAuthenticated = true
+}
 const cache = new InMemoryCache()
 const authLink = new AuthLink()
 
 const client = new ApolloClient({
   link: ApolloLink.from([errorLink, authLink, serverLink]),
 	cache: cache,
-	resolvers: {
-		User: {
-			isAuthenticated(){
-				console.log('resolver is auth')
-			}
-		}
-	}, //graphql throws error on client queries if undefined
+	resolvers: {}, //graphql throws error on client queries if resolvers are undefined
 	defaultOptions: {
 		watchQuery: {
 			fetchPolicy: 'cache-and-network'
@@ -41,9 +39,8 @@ cache.writeData({
 	data: defaultState
 })
 
-export const refreshToken = (cancel?) => client.mutate({mutation: REFRESH_TOKEN}).then((res) => {
-	if(cancel) return
-	console.log('refresh')
+client.mutate({mutation: REFRESH_TOKEN}).then((res) => {
+	//console.log('refresh', Date.now())
 	if(res) {
 		const {name, email, accessToken} = res.data.refreshToken
 		client.writeData({
@@ -56,10 +53,9 @@ export const refreshToken = (cancel?) => client.mutate({mutation: REFRESH_TOKEN}
 				}
 			}
 		})
-		setTimeout(()=>refreshToken(), 840000)
+		//setAutorefresh(this)
 	}
 })
-refreshToken()
 
 render(
 	<ApolloProvider client={client}>

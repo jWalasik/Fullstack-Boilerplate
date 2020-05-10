@@ -29,7 +29,10 @@ const resolvers = {
           if(err) throw err
           user.resetToken = token
           user.resetTokenExp = Date.now() + 3600000
-          return user.save().then(()=>{
+          return user.update({
+            resetToken: token,
+            resetTokenExp: Date.now() + 3600000
+          }).then(()=>{
             console.log(args.email)
             const message = {
               from: `jacekwalasik89@gmail.com`,
@@ -55,26 +58,25 @@ const resolvers = {
       .catch(err=>err)
     },
     newPassword: (_, args, context) => {
-      console.log(args)
       const {newPassword, resetToken} = args
       return User.findOne({resetToken: resetToken}).then(user=>{
-        console.log(user)
         if(user.resetTokenExp < Date.now()) {
           return 'Reset token has expired!'
         }
-        const password = bcrypt.hashSync(newPassword, 12)
-        user.update({password: password})
+        user.password = newPassword
+        user.save() // save automaticly hashes password
         return 'Succesfully set up new password'
       })
     },
     login: (_, args, context) => {
-      console.log('login context:', context.headers)
       return User
       .findOne({$or:[
         {email: args.user},
         {name: args.user}, //to-do: change argument to neutral
+        //$2b$12$ENPc40c6SfkGQNKh.ZETg.PZX.9r0hdEgcLRrhayRHopHTTn.WRjy
         
       ]}).then(async user => {
+        console.log('user',user)
         const match = bcrypt.compareSync(args.password, user.password)
         if(!match){
           return new Error('Passwords not matching!')
@@ -100,21 +102,34 @@ const resolvers = {
       context.logout()
     },
     changePassword: (_, args, context) => {
-      console.log(args)
-      return User.findOne({$or:[
-        {email: args.user},
-        {name: args.user}, //to-do: change argument to neutral
+      const token = context.headers.authorization.split(' ')[1]
+      return jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, decoded)=>{
+        return User.findById(decoded.user.id).then(user => {
+          console.log(user)
+          if(!user.password){ //users created through external auth services have no password specified, this lets them add one
+            const newPassHashed = bcrypt.hashSync(args.newPass, 12)
+            user.password = newPassHashed
+            user.save()
+            return 'Password has been updated'
+          }
+          const match = bcrypt.compareSync(args.currentPass, user.password)
+          if(match) {
+            console.log('password matching')
+            const newPassHashed = bcrypt.hashSync(args.newPass, 12)
+            user.update({password: newPassHashed})
+            return 'Password has been updated'
+          }
+          if(!match) {
+            return 'Password not matching'
+          }
+        })
+      })
+    },
+    googleSignIn: (_, args, context) => {
+      return new Promise((resolve, reject)=>{
+        console.log(args)
+        const {code} = args
         
-      ]}).then(user => {
-        const match = bcrypt.compareSync(args.currentPass, user.password)
-        if(match) {
-          const newPassHashed = bcrypt.hashSync(this.password, 12)
-          user.update({password: newPassHashed})
-          return 'Password has been updated'
-        }
-        if(!match) {
-          return 'Password not matching'
-        }
       })
     },
     facebookSignIn: (_, args, context) => {

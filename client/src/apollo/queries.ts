@@ -1,8 +1,8 @@
 import { gql } from 'apollo-boost';
 
-export const CHECK_AUTH = gql`
-  query IsUserLoggedIn {
-    isAuth @client
+export const IS_AUTH = gql`
+  query IsAuthenticated {
+    isAuthenticated @client
   }
 `
 export const GET_USER = gql`

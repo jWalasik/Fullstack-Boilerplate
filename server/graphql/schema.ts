@@ -36,8 +36,9 @@ const typeDefs = gql`
     resetPassword(email: String!): String
     newPassword(newPassword: String!, resetToken: String!): String
     logout: Boolean
-    changePassword(user: String!, currentPass: String!, newPass: String!): String
+    changePassword(currentPass: String!, newPass: String!): String
     facebookSignIn(code: String!): User
+    googleSignIn(code: String!): User
     refreshToken: User
   }
 `

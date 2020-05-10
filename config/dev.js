@@ -20,12 +20,12 @@ module.exports = merge(basicConfig, {
     historyApiFallback: true,
     hot: true, // enable HMR on the server
     open: true,
-    proxy: {
-      '/auth/**': {
-        target: 'http://localhost:4000',
-        changeOrigin: true
-      }
-    }
+    // proxy: {
+    //   '/auth/**': {
+    //     target: 'http://localhost:4000',
+    //     changeOrigin: true
+    //   }
+    // }
   },
   devtool: 'cheap-module-eval-source-map',
   plugins: [

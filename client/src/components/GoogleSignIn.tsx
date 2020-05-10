@@ -2,16 +2,16 @@ import * as React from 'react'
 import {useEffect, useState, useRef} from 'react'
 import querystring from 'querystring'
 import {useMutation, useApolloClient} from '@apollo/react-hooks'
-import * as fb from '../../public/images/fb-icon.png'
+import * as google from '../../public/images/google-icon.png'
 import {withRouter} from 'react-router-dom'
 
-import {FACEBOOK_SIGN_IN} from '../apollo/mutations'
+import {GOOGLE_SIGN_IN} from '../apollo/mutations'
 
 interface State {
   loading
 }
 
-interface FaceookSignIn {
+interface GoogleSignIn {
   appId: number,
   redirectUrl: string,
   code: any,
@@ -21,16 +21,16 @@ interface FaceookSignIn {
 const FaceookSignIn: any = (props) => {
   const client = useApolloClient()
   const appId = '187856148967924'
-  const redirectUrl = `${document.location.protocol}//${document.location.host}/facebook-callback`;
+  const redirectUrl = `${document.location.protocol}//${document.location.host}/google-callback`;
 
-  const code = (document.location.pathname === '/facebook-callback') ? querystring.parse(document.location.search)['?code'] : null
+  const code = (document.location.pathname === '/google-callback') ? querystring.parse(document.location.search)['?code'] : null
   const [loading, setLoading] = useState(false)
-  const [callFacebook, {data}] = useMutation(FACEBOOK_SIGN_IN)
+  const [callGoogle, {data}] = useMutation(GOOGLE_SIGN_IN)
 
   useEffect(()=>{
     let canceled
     if(!code || canceled) return
-    callFacebook({variables: {code: code}})
+    callGoogle({variables: {code: code}})
     .then(res=>{
       setLoading(false)
       
@@ -72,7 +72,7 @@ const FaceookSignIn: any = (props) => {
 
   return (
     <a className="login-options__link" href='/facebook-login' onClick={handleClick}>
-      {loading ? <p>loading...</p> : <img className="social-link__icon" src={fb.default} id="facebook" /> }
+      {loading ? <p>loading...</p> : <img className="social-link__icon" src={google.default} id="google" /> }
     </a>
   )
 }

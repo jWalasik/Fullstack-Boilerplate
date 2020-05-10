@@ -1,3 +1,5 @@
+export let isAuthenticated
+
 export const defaultState = {
   isAuthenticated: false,
   user: {
@@ -13,6 +15,11 @@ export const saveUser = (data) => {
   
 }
 
-export const refreshToken = (cancel) => {
-
-}
+// let refresher
+// export const setAutorefresh = (func: Function, cancel?: Boolean) => {
+//   console.log('set Auto Refresh')
+//   if(cancel) clearTimeout(refresher)
+//   refresher = setTimeout(()=>{
+//     func()
+//   },8600000)
+// }

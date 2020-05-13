@@ -14,7 +14,7 @@ export class AuthLink extends ApolloLink {
 
    request(operation: Operation, forward: NextLink): any{
     const {user} = this.client.readQuery({query: GET_USER})
-    
+
     if(user.accessToken) {      
       operation.setContext(({headers = {}} : any) => ({
         headers:{

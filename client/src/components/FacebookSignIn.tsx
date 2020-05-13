@@ -18,57 +18,32 @@ interface FaceookSignIn {
   state: State
 }
 
-const FaceookSignIn: any = (props) => {
-  const client = useApolloClient()
+const FaceookSignIn = (props) => {
   const appId = '187856148967924'
-  const redirectUrl = `${document.location.protocol}//${document.location.host}/facebook-callback`;
-
+  const redirectUrl = `${document.location.protocol}//${document.location.host}/facebook-callback`
   const code = (document.location.pathname === '/facebook-callback') ? querystring.parse(document.location.search)['?code'] : null
-  const [loading, setLoading] = useState(false)
-  const [callFacebook, {data}] = useMutation(FACEBOOK_SIGN_IN)
-
-  useEffect(()=>{
-    let canceled
-    if(!code || canceled) return
-    callFacebook({variables: {code: code}})
-    .then(res=>{
-      setLoading(false)
-      
-      const {error, name, email, accessToken} = res.data.facebookSignIn
-      if (error) {
-        alert(`Sign in error: ${error}`);
-      } else {
-        //alert(`sign in success`);
-        client.writeData({
-          data: {
-            user: {
-              name: name,
-              email: email,
-              accessToken: accessToken,
-              __typename: 'User'
-            }
-          }
-        })
-        //props.history.push('/')
+  const [callFacebook, {client, data, loading, error, called}] = useMutation(FACEBOOK_SIGN_IN, {onCompleted: (data)=>{
+    const {name, email, accessToken} = data.facebookSignIn
+    client.writeData({
+      data: {
+        user: {
+          name: name,
+          email: email,
+          accessToken: accessToken,
+          __typename: 'User'
+        }
       }
     })
-    .catch(e=>{
-      console.log(e)
-      setLoading(false)
-    })
-    return ()=>canceled = true
-  },[])
+  }})
 
+  if(code && !called) {
+    callFacebook({variables: {code: code}})
+  }
+  
   const handleClick = e => {
-    setLoading(true)
     e.preventDefault()
     window.location.href = `https://www.facebook.com/v2.9/dialog/oauth?client_id=${appId}&redirect_uri=${encodeURIComponent(redirectUrl)}`;
   }
-
-  // const redirect = () => {
-  //   console.log('redirect')
-  //   this.props.history.push('/')
-  // }
 
   return (
     <a className="login-options__link" href='/facebook-login' onClick={handleClick}>

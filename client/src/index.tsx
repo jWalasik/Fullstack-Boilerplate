@@ -39,23 +39,23 @@ cache.writeData({
 	data: defaultState
 })
 
-client.mutate({mutation: REFRESH_TOKEN}).then((res) => {
-	//console.log('refresh', Date.now())
-	if(res) {
-		const {name, email, accessToken} = res.data.refreshToken
-		client.writeData({
-			data: {
-				user: {
-					name: name,
-					email: email,
-					accessToken: accessToken,
-					__typename: 'User'
-				}
-			}
-		})
-		//setAutorefresh(this)
-	}
-})
+// client.mutate({mutation: REFRESH_TOKEN}).then((res) => {
+// 	console.log('refresh')
+// 	if(res) {
+// 		const {name, email, accessToken} = res.data.refreshToken
+// 		client.writeData({
+// 			data: {
+// 				user: {
+// 					name: name,
+// 					email: email,
+// 					accessToken: accessToken,
+// 					__typename: 'User'
+// 				}
+// 			}
+// 		})
+// 		//setAutorefresh(this)
+// 	}
+// })
 
 render(
 	<ApolloProvider client={client}>

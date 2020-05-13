@@ -19,8 +19,8 @@ export default () => {
       <PublicRoute exact path='/reset:token' component={SetPassword} />
       
       <PublicRoute exact path='/:callback?' component={Auth}/>
-
-      <Route component={FourOhFour} />
+      
+      <Route path='*' component={FourOhFour} />
     </Switch>
   </BrowserRouter>
   )

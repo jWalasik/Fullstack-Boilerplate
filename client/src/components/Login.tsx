@@ -27,6 +27,7 @@ const Login = (props) => {
 
   const handleSubmit = e => {
     e.preventDefault()
+
     submitLogin({variables: {login, password}})
       .then(payload => {
         console.log(payload.data.login)
@@ -43,7 +44,7 @@ const Login = (props) => {
         })
         history.push('/')
       })
-      .catch(err=>console.log)
+      .catch(err=>console.log(err))
   }
   return (
     <form className="login-form"

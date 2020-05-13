@@ -23,16 +23,17 @@ export const PrivateRoute = ({component: Component, ...rest}) => {
 }
 
 export const PublicRoute = ({component: Component, ...rest}) => {
-  const {client, loading, data} = useQuery(GET_USER, {fetchPolicy: 'cache-only'})
-  let isAuthenticated = !!data.user.accessToken
-
+  const {client, loading, data: {user: {accessToken}}} = useQuery(GET_USER, {fetchPolicy: 'cache-only'})
+  
+  return accessToken ? <Redirect to='/home' /> : <Component />
+  //nesting components in route th
   return (
     <Route {...rest} component={(props)=>(
-      isAuthenticated ? (
-        <Redirect to='/home' />
+      !accessToken ? (
+          <Component {...props} />  
       ) : (
-        <Component {...props} />
+        <Redirect to='/home' />
       )
-    )}/>
-  )  
+    )} />
+  )
 }

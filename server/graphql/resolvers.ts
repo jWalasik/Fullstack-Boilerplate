@@ -133,6 +133,7 @@ const resolvers = {
       })
     },
     facebookSignIn: (_, args, context) => {
+      console.log('fb sign in')
       return new Promise((resolve, reject) => {
         const {code} = args
         facebook.call('oauth/access_token', {code}).then(response => {
@@ -158,7 +159,6 @@ const resolvers = {
                   grant_type: 'fb_exchange_token',
                   fb_exchange_token: access_token
                 }).then(response => {
-                  console.log('facebook response', response)
                   User.create({
                     facebook: id,
                     email: email? email : `${name}@placeholder.fb`,

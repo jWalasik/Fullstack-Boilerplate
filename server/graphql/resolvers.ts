@@ -2,10 +2,13 @@ const User = require('../models/user.ts')
 const bcrypt = require('bcrypt')
 const crypto = require('crypto')
 const FB = require('../services/facebook.ts')
+const GoogleAuth = require('../services/google.ts')
 const session = require('express-session')
 const jwt = require('jsonwebtoken')
 const mailgun = require('mailgun-js')({ apiKey: process.env.MAILER_KEY, domain: 'sandbox773303c5f0da4b93ad2563baac3727a8.mailgun.org' });
+
 const facebook = new FB()
+const google = new GoogleAuth()
 
 const resolvers = {
   Query: {
@@ -127,9 +130,11 @@ const resolvers = {
     },
     googleSignIn: (_, args, context) => {
       return new Promise((resolve, reject)=>{
-        console.log(args)
+        console.log('google sign in:', args)
         const {code} = args
-        
+        google.call(code).then(response => {
+          console.log('mutation',response)
+        })
       })
     },
     facebookSignIn: (_, args, context) => {

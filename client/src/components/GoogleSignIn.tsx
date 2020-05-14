@@ -19,59 +19,25 @@ interface GoogleSignIn {
 }
 
 const FaceookSignIn: any = (props) => {
-  const client = useApolloClient()
-  const appId = '187856148967924'
+  const clientId = '595630687793-7psec6hg5iva4vfn1n9no84i5n2op3ok.apps.googleusercontent.com'
   const redirectUrl = `${document.location.protocol}//${document.location.host}/google-callback`;
-
   const code = (document.location.pathname === '/google-callback') ? querystring.parse(document.location.search)['?code'] : null
-  const [loading, setLoading] = useState(false)
-  const [callGoogle, {data}] = useMutation(GOOGLE_SIGN_IN)
+  const [callGoogle, {client, data, loading, error, called}] = useMutation(GOOGLE_SIGN_IN, {onCompleted: (data)=>{
+    console.log(data)
+  }})
+  console.log(code)
 
-  useEffect(()=>{
-    let canceled
-    if(!code || canceled) return
+  if(code && !called) {
     callGoogle({variables: {code: code}})
-    .then(res=>{
-      setLoading(false)
-      
-      const {error, name, email, accessToken} = res.data.facebookSignIn
-      if (error) {
-        alert(`Sign in error: ${error}`);
-      } else {
-        //alert(`sign in success`);
-        client.writeData({
-          data: {
-            user: {
-              name: name,
-              email: email,
-              accessToken: accessToken,
-              __typename: 'User'
-            }
-          }
-        })
-        //props.history.push('/')
-      }
-    })
-    .catch(e=>{
-      console.log(e)
-      setLoading(false)
-    })
-    return ()=>canceled = true
-  },[])
-
-  const handleClick = e => {
-    setLoading(true)
-    e.preventDefault()
-    window.location.href = `https://www.facebook.com/v2.9/dialog/oauth?client_id=${appId}&redirect_uri=${encodeURIComponent(redirectUrl)}`;
   }
 
-  // const redirect = () => {
-  //   console.log('redirect')
-  //   this.props.history.push('/')
-  // }
+  const handleClick = e => {
+    e.preventDefault()
+    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=${encodeURIComponent(redirectUrl)}&prompt=consent&response_type=code&client_id=${clientId}&scope=openid&access_type=offline`;
+  }
 
   return (
-    <a className="login-options__link" href='/facebook-login' onClick={handleClick}>
+    <a className="login-options__link" href='/google-login' onClick={handleClick}>
       {loading ? <p>loading...</p> : <img className="social-link__icon" src={google.default} id="google" /> }
     </a>
   )

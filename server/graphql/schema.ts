@@ -27,6 +27,7 @@ const typeDefs = gql`
     isActive: Boolean
     role: String
     facebook: String
+    google: String
     accessToken: String
   }
 

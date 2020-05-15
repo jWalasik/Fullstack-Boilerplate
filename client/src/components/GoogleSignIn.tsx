@@ -23,9 +23,18 @@ const FaceookSignIn: any = (props) => {
   const redirectUrl = `${document.location.protocol}//${document.location.host}/google-callback`;
   const code = (document.location.pathname === '/google-callback') ? querystring.parse(document.location.search)['?code'] : null
   const [callGoogle, {client, data, loading, error, called}] = useMutation(GOOGLE_SIGN_IN, {onCompleted: (data)=>{
-    console.log(data)
+    const {name, email, accessToken} = data.googleSignIn
+    client.writeData({
+      data: {
+        user: {
+          name: name,
+          email: email,
+          accessToken: accessToken,
+          __typename: 'User'
+        }
+      }
+    })
   }})
-  console.log(code)
 
   if(code && !called) {
     callGoogle({variables: {code: code}})
@@ -33,7 +42,7 @@ const FaceookSignIn: any = (props) => {
 
   const handleClick = e => {
     e.preventDefault()
-    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=${encodeURIComponent(redirectUrl)}&prompt=consent&response_type=code&client_id=${clientId}&scope=openid&access_type=offline`;
+    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=${encodeURIComponent(redirectUrl)}&prompt=consent&response_type=code&client_id=${clientId}&scope=email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&access_type=offline`;
   }
 
   return (

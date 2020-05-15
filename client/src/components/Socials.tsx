@@ -18,12 +18,6 @@ const Socials = () => {
         </li>
 
         <li>
-          <a className="login-options__link" href="/auth/google">
-            <img className="social-link__icon" src={google.default} id="google" />
-          </a>
-        </li>
-
-        <li>
           <a className="login-options__link" 
             //href="/auth/twitter"
           >

@@ -130,10 +130,40 @@ const resolvers = {
     },
     googleSignIn: (_, args, context) => {
       return new Promise((resolve, reject)=>{
-        console.log('google sign in:', args)
         const {code} = args
         google.call(code).then(response => {
-          console.log('mutation',response)
+          const {email} = response
+          let tokens
+          User.findOne({email: email}).then(async user => {
+            if(user){
+              tokens = await user.generateJWT()
+              
+              context.res.cookie('token', tokens.refreshToken, {
+                httpOnly: true,
+                maxAge: 1000*60*60*24*31
+              })
+              user.accessToken = tokens.accessToken
+              resolve(
+                user
+              )
+            } else {
+                User.create({
+                  email: email,
+                  name: name,
+                  isActive: true
+                }).then(async user => {
+                  tokens = await user.generateJWT()
+                  context.res.cookie('token', tokens.refreshToken, {
+                    httpOnly: true,
+                    maxAge: 1000*60*60*24*31
+                  })
+                  user.accessToken = tokens.accessToken
+                  resolve(
+                    user
+                  )
+                })
+            }
+          }) 
         })
       })
     },

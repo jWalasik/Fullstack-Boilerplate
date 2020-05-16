@@ -4,9 +4,9 @@ import { SIGNUP } from '../apollo/mutations'
 import { useMutation } from "@apollo/react-hooks";
 
 const Signup = (props) => {
-  const [password, setPassword] = useState()
-  const [email, setEmail] = useState()
-  const [name, setName] = useState()
+  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('')
+  const [name, setName] = useState('')
 
   const [submitSingup, {data}] = useMutation(SIGNUP)
 

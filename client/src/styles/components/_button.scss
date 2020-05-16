@@ -1,0 +1,34 @@
+.button-spinner {
+  margin-left: 0;
+  background: none;
+  border: 2px solid $interactive;
+  border-radius: 50px;
+  color: $interactive;
+  height: 40px;
+  width: 150px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  transition: ease-out 0.2s;
+
+  &:hover {
+    color: $font-main;
+    background-color: $interactive;
+  }
+}
+
+.active {
+  width: 40px;
+  margin: 45px;
+  font-size: 0;
+  border-right: none;
+  animation: spin 0.7s ease-in-out infinite;
+  
+  &:hover {
+    color: $interactive;
+    background: none;
+  }
+}
+@keyframes spin {
+  100% {transform: rotate(360deg)}
+}

@@ -1,12 +1,12 @@
 import * as React from "react";
 import {useState} from 'react'
 import { useMutation } from '@apollo/react-hooks'
-
+import Button from './utils/Button'
 import { RESET_PASSWORD } from '../apollo/mutations'
 
 const Reset = (props) => {
   const [email, setEmail] = useState('')
-  const [resetPassword, x] = useMutation(RESET_PASSWORD)
+  const [resetPassword, {data, loading}] = useMutation(RESET_PASSWORD)
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -33,8 +33,8 @@ const Reset = (props) => {
     </div>        
     
     
-    <div className="form-buttons">          
-      <button className="login-button">Reset Password</button>
+    <div className="form-buttons">
+      <Button text={'Reset Password'} loading={loading} />
       <p className="login password_reminder" onClick={()=>props.handler('login')} >Cancel</p>
     </div>       
   </form>

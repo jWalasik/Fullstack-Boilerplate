@@ -132,7 +132,7 @@ const resolvers = {
       return new Promise((resolve, reject)=>{
         const {code} = args
         google.call(code).then(response => {
-          const {email} = response
+          const {email, name} = response
           let tokens
           User.findOne({email: email}).then(async user => {
             if(user){

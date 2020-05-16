@@ -4,6 +4,7 @@ import querystring from 'querystring'
 import {useMutation, useApolloClient} from '@apollo/react-hooks'
 import * as fb from '../../public/images/fb-icon.png'
 import {withRouter} from 'react-router-dom'
+import Button from './utils/Button'
 
 import {FACEBOOK_SIGN_IN} from '../apollo/mutations'
 
@@ -47,7 +48,7 @@ const FaceookSignIn = (props) => {
 
   return (
     <a className="login-options__link" href='/facebook-login' onClick={handleClick}>
-      {loading ? <p>loading...</p> : <img className="social-link__icon" src={fb.default} id="facebook" /> }
+      {loading ? <Button loading={loading} /> : <img className="social-link__icon" src={fb.default} id="facebook" /> }
     </a>
   )
 }

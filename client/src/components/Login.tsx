@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import {gql} from 'apollo-boost'
 import {useMutation, useApolloClient} from '@apollo/react-hooks'
 import Socials from './Socials'
+import Button from './utils/Button'
 
 const _login = gql`
   mutation login($login: String!, $password: String!) {
@@ -23,14 +24,13 @@ const Login = (props) => {
   const [password, setPassword] = useState('')
   const [login, setLogin] = useState('') 
 
-  const [submitLogin, {data}] = useMutation(_login)
+  const [submitLogin, {data, loading}] = useMutation(_login)
 
   const handleSubmit = e => {
     e.preventDefault()
 
     submitLogin({variables: {login, password}})
       .then(payload => {
-        console.log(payload.data.login)
         const {name, email, accessToken} = payload.data.login
         client.writeData({
           data: {
@@ -81,8 +81,8 @@ const Login = (props) => {
         />
       </div>
       
-      <div className="form-buttons">          
-        <button className="login-button">LOG IN</button>
+      <div className="form-buttons">
+        <Button text={'LOG IN'} handler={undefined} loading={loading} />
         
         <p className="login password_reminder" onClick={()=>props.handler('reset')}>Forgot Password?</p>
       </div>         

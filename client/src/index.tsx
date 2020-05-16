@@ -6,15 +6,11 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloLink } from 'apollo-boost';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { AuthLink, errorLink, serverLink } from './apollo/links'
-import { defaultState, setAutorefresh } from './apollo/store'
+import { defaultState } from './apollo/store'
 
 import App from "./router";
 import { REFRESH_TOKEN } from "./apollo/mutations";
 
-export let isAuthenticated
-export const setAuth = () => {
-	isAuthenticated = true
-}
 const cache = new InMemoryCache()
 const authLink = new AuthLink()
 

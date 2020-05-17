@@ -19,6 +19,11 @@ const typeDefs = gql`
     refreshToken: String
   }
 
+  type Message {
+    type: String
+    text: String
+  }
+
   type User {
     _id: ID
     name: String
@@ -33,11 +38,11 @@ const typeDefs = gql`
 
   type Mutation {
     login(user: String!, password: String!): User
-    signup(email: String!, password: String!, name: String): User
-    resetPassword(email: String!): String
-    newPassword(newPassword: String!, resetToken: String!): String
+    signup(email: String!, password: String!, name: String): Message
+    resetPassword(email: String!): Message
+    setPassword(newPassword: String!, resetToken: String!): Message
     logout: Boolean
-    changePassword(currentPass: String!, newPass: String!): String
+    changePassword(currentPass: String!, newPass: String!): Message
     facebookSignIn(code: String!): User
     googleSignIn(code: String!): User
     refreshToken: User

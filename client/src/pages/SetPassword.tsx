@@ -1,20 +1,43 @@
-import * as React from "react";
+import * as React from "react"
+import {withRouter} from 'react-router-dom'
 import {useState} from 'react'
 import { useMutation } from '@apollo/react-hooks'
 
-import { NEW_PASSWORD } from '../apollo/mutations'
+import { SET_PASSWORD } from '../apollo/mutations'
+import MessageDisplay from "../components/utils/MessageDisplay"
 
 const SetPassword = (props) => {
   const [newPassword, setNewPass] = useState('')
   const [confimation, setConfirmation] = useState('')
-  const [setPassword, x] = useMutation(NEW_PASSWORD)
+  const [setPassword, {data, loading}] = useMutation(SET_PASSWORD, {
+    onCompleted: ({setPassword}) => setMessage(setPassword),
+    onError: (err)=>{
+      err.graphQLErrors.map(({message}, i) => {
+        setMessage({
+          type: 'Error',
+          text: message
+        })
+      })
+    }
+  })
+
   const resetToken = window.location.href.split('reset')[1]
-  
+
+  const [message, setMessage] = useState({
+    type: undefined,
+    text: undefined
+  })
+
   const handleSubmit = e => {
     e.preventDefault()
-    setPassword({variables: {newPassword, resetToken}}).then(res=>{
-      console.log(res)
-    }).catch(e=>console.log(e))
+    if(newPassword !== confimation) {
+      setMessage({
+        type: 'Error',
+        text: 'Passwords not matching'
+      })
+      return
+    }
+    setPassword({variables: {newPassword, resetToken}})
   }
 
   return (
@@ -46,7 +69,9 @@ const SetPassword = (props) => {
             name="confirmation" 
             placeholder="Confirm New Password" 
           />
-        </div>    
+        </div>
+
+        <MessageDisplay message={message} />
         
         <div className="form-buttons">          
           <button className="login-button">Set Password</button>
@@ -57,4 +82,4 @@ const SetPassword = (props) => {
   )
 }
 
-export default SetPassword
+export default withRouter(SetPassword)

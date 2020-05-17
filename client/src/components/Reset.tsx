@@ -3,16 +3,29 @@ import {useState} from 'react'
 import { useMutation } from '@apollo/react-hooks'
 import Button from './utils/Button'
 import { RESET_PASSWORD } from '../apollo/mutations'
+import MessageDisplay from "./utils/MessageDisplay";
 
 const Reset = (props) => {
   const [email, setEmail] = useState('')
-  const [resetPassword, {data, loading}] = useMutation(RESET_PASSWORD)
+  const [message, setMessage] = useState({
+    type: undefined,
+    text: undefined
+  })
+  const [resetPassword, {data, loading}] = useMutation(RESET_PASSWORD, {
+    onCompleted: ({resetPassword})=> setMessage(resetPassword),
+    onError: (err)=>{
+      err.graphQLErrors.map(({message}, i) => {
+        setMessage({
+          type: 'Error',
+          text: message
+        })
+      })
+    }
+  })
 
   const handleSubmit = e => {
     e.preventDefault()
-    resetPassword({variables: {email}}).then(res=>{
-      console.log(res)
-    }).catch(e=>console.log(e))
+    resetPassword({variables: {email}})
   }
 
   return (
@@ -32,6 +45,7 @@ const Reset = (props) => {
       />
     </div>        
     
+    <MessageDisplay message={message} />
     
     <div className="form-buttons">
       <Button text={'Reset Password'} loading={loading} />

@@ -2,20 +2,32 @@ import * as React from "react";
 import {useState} from 'react'
 import { SIGNUP } from '../apollo/mutations'
 import { useMutation } from "@apollo/react-hooks";
+import MessageDisplay from "./utils/MessageDisplay";
+import Button from "./utils/Button";
 
 const Signup = (props) => {
   const [password, setPassword] = useState('')
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
-
-  const [submitSingup, {data}] = useMutation(SIGNUP)
+  const [message, setMessage] = useState({
+    type: undefined,
+    text: undefined
+  })
+  const [singup, {data, loading, called }] = useMutation(SIGNUP, {
+    onCompleted:({signup})=>setMessage(signup), 
+    onError: (err)=> {
+      err.graphQLErrors.map(({message}, i) => {
+        setMessage({
+          type: 'Error',
+          text: message
+        })
+      })
+    }
+  })
 
   const handleSubmit = e => {
     e.preventDefault()
-    submitSingup({variables: {email,password,name}}).then(res=>{
-      console.log('signup form submitted', res)
-      window.location.reload()
-    })
+    singup({variables: {email,password,name}})
   }
 
   return (
@@ -64,8 +76,10 @@ const Signup = (props) => {
       <p className="form-info">* - optional</p>
       <p className="form-info">** - at least 8 characters</p>
       
+      <MessageDisplay message={message} />
+
       <div className="form-buttons">          
-        <button className="login-button">Sign Up</button>
+        <Button text={'SIGNUP'} handler={undefined} loading={loading} />
 
         <p className="login password_reminder" onClick={()=>props.handler('login')} >Already have account?</p>
         

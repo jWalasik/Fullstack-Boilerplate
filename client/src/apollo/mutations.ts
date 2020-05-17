@@ -20,29 +20,36 @@ export const LOGIN = gql`
 export const SIGNUP = gql`
   mutation signup($name: String, $password: String!, $email: String!) {
     signup(email: $email, password: $password, name: $name) {
-      email
-      _id
-      isActive
-      token
+      type
+      text
     }
   }
 `
 
 export const CHANGE_PASSWORD = gql`
   mutation changePassword($currentPass: String!, $newPass: String!) {
-    changePassword(currentPass: $currentPass, newPass: $newPass)
+    changePassword(currentPass: $currentPass, newPass: $newPass) {
+      type
+      text
+    }
   }
 `
 
-export const NEW_PASSWORD = gql`
-  mutation newPassword($newPassword: String!, $resetToken: String!){
-    newPassword(newPassword: $newPassword, resetToken: $resetToken)
+export const SET_PASSWORD = gql`
+  mutation setPassword($newPassword: String!, $resetToken: String!){
+    setPassword(newPassword: $newPassword, resetToken: $resetToken) {
+      type
+      text
+    }
   }
 `
 
 export const RESET_PASSWORD = gql`
   mutation resetPassword($email: String!) {
-    resetPassword(email: $email)
+    resetPassword(email: $email) {
+      type
+      text
+    }
   }
 `
 

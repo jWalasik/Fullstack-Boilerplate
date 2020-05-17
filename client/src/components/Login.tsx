@@ -5,6 +5,7 @@ import {gql} from 'apollo-boost'
 import {useMutation, useApolloClient} from '@apollo/react-hooks'
 import Socials from './Socials'
 import Button from './utils/Button'
+import MessageDisplay from './utils/MessageDisplay'
 
 const _login = gql`
   mutation login($login: String!, $password: String!) {
@@ -22,9 +23,22 @@ const Login = (props) => {
   let history = useHistory();
   const client = useApolloClient()
   const [password, setPassword] = useState('')
-  const [login, setLogin] = useState('') 
+  const [login, setLogin] = useState('')
+  const [message, setMessage] = useState({
+    type: undefined,
+    text: undefined
+  })
 
-  const [submitLogin, {data, loading}] = useMutation(_login)
+  const [submitLogin, {data, loading}] = useMutation(_login, {
+    onError: (err)=> {
+      err.graphQLErrors.map(({message}, i) => {
+        setMessage({
+          type: 'Error',
+          text: message
+        })
+      })
+    }
+  })
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -80,6 +94,8 @@ const Login = (props) => {
           placeholder="Password" 
         />
       </div>
+
+      <MessageDisplay message={message} />
       
       <div className="form-buttons">
         <Button text={'LOG IN'} handler={undefined} loading={loading} />

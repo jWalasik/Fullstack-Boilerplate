@@ -14,7 +14,6 @@ const Auth = () => {
   const [display, setDisplay] = useState('login')
   let Display = Map[display]
   const changeDisplay = (e) => {
-    console.log(e)
     setDisplay(e)
   }
 

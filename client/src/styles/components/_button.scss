@@ -1,6 +1,6 @@
 .button-spinner {
-  margin-left: 0;
   background: none;
+  box-sizing: border-box;
   border: 2px solid $interactive;
   border-radius: 50px;
   color: $interactive;
@@ -19,7 +19,7 @@
 
 .active {
   width: 40px;
-  margin: 45px;
+  margin: 0 55px 0 55px;
   font-size: 0;
   border-right: none;
   animation: spin 0.7s ease-in-out infinite;

@@ -1,9 +1,9 @@
 import * as React from 'react'
-import {useEffect, useState, useRef} from 'react'
 import querystring from 'querystring'
 import {useMutation, useApolloClient} from '@apollo/react-hooks'
 import * as google from '../../public/images/google-icon.png'
 import {withRouter} from 'react-router-dom'
+import Button from './utils/Button'
 
 import {GOOGLE_SIGN_IN} from '../apollo/mutations'
 
@@ -47,7 +47,7 @@ const FaceookSignIn: any = (props) => {
 
   return (
     <a className="login-options__link" href='/google-login' onClick={handleClick}>
-      {loading ? <p>loading...</p> : <img className="social-link__icon" src={google.default} id="google" /> }
+      {loading ? <Button loading={loading} /> : <img className="social-link__icon" src={google.default} id="google" /> }
     </a>
   )
 }

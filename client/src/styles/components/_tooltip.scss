@@ -1,0 +1,40 @@
+.tooltip {
+  position: relative;
+  display: inline-block;
+  color: $interactive;
+  cursor: pointer;
+  border: solid $interactive 2px;
+  border-radius: 100%;
+  width: $font-size-small;
+  text-align: center;
+
+  &:hover .tooltip__box {
+    visibility: visible;
+  }
+}
+
+.tooltip__box {
+  visibility: hidden;
+  width: 150px;
+  background-color: $background-field;
+  text-align: center;
+  color: $interactive;
+  border: solid $interactive 2px;
+  position: absolute;
+  z-index: 1;
+  top: 150%;
+  left: 50%;
+  margin-left: -75px;
+  padding: 5px;
+  
+  &:after{
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent $interactive transparent
+  }
+}

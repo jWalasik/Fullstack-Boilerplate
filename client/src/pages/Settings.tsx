@@ -1,26 +1,43 @@
 import * as React from 'react'
 import { useState } from 'react'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { GET_USER } from '../apollo/queries'
 import { CHANGE_PASSWORD } from '../apollo/mutations'
+import Tooltip from '../components/utils/Tooltip'
+import MessageDisplay from '../components/utils/MessageDisplay'
+import Button from '../components/utils/Button'
 
 const Settings = () => {
-  const {client, loading, data} = useQuery(GET_USER)
-  const [submitPassword, {}] = useMutation(CHANGE_PASSWORD)
+  const [message, setMessage] = useState({
+    type: undefined,
+    text: undefined
+  })
+  
+  const [changePassword, {data, loading, called }] = useMutation(CHANGE_PASSWORD, {
+    onCompleted: ({changePassword})=> setMessage(changePassword),
+    onError: (err)=> {
+      err.graphQLErrors.map(({message}, i) => {
+        console.log(message)
+        setMessage({
+          type: 'Error',
+          text: message
+        })
+      })
+    }
+  })
   const [currentPass, setCurrPass] = useState(''),
         [newPass, setNewPass] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault()    
-    submitPassword({variables: {currentPass, newPass}})
+    changePassword({variables: {currentPass, newPass}})
   }
 
   return (
     <main>
       <h1>Settings</h1>
-
+      
       <div className="user profile">
-        <h2>{data && data.user.name} Profile</h2>
+        <h2>Profile</h2>
       </div>
 
       <form onSubmit={handleSubmit}>
@@ -33,6 +50,7 @@ const Settings = () => {
           name="currentPassword" 
           placeholder="Current Password" 
         />
+        <Tooltip text='If you logged in with social network leave this field empty' />
 
         <input
           value={newPass}
@@ -44,7 +62,9 @@ const Settings = () => {
           placeholder="New Password" 
         />
 
-        <button>Change Password</button>
+        <MessageDisplay message={message} />
+
+        <Button text={'Change Password'} loading={loading} handler={undefined} />
       </form>
     </main>
   )

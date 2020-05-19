@@ -98,7 +98,6 @@ const resolvers = {
       })
     },
     logout: (_, args, context) => {
-      console.log('loggin out...')
       context.user = {}
       //if you want to prevent login with refresh token you need to implement token blacklisting logic
       context.logout()
@@ -120,7 +119,7 @@ const resolvers = {
             return {type: 'Success', text:'Password has been updated'}
           }
           if(!match) {
-            return {type: 'Error', text: "Invalid password"}
+            throw new Error('Invalid password')
           }
         })
       })

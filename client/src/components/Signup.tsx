@@ -4,6 +4,7 @@ import { SIGNUP } from '../apollo/mutations'
 import { useMutation } from "@apollo/react-hooks";
 import MessageDisplay from "./utils/MessageDisplay";
 import Button from "./utils/Button";
+import Tooltip from "./utils/Tooltip";
 
 const Signup = (props) => {
   const [password, setPassword] = useState('')
@@ -24,6 +25,7 @@ const Signup = (props) => {
       })
     }
   })
+  
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -44,6 +46,7 @@ const Signup = (props) => {
           name="user" 
           placeholder="Username *" 
         />
+        <Tooltip text={'This field is optional'} />
       </div>  
       
       <div className="input-field">
@@ -71,6 +74,7 @@ const Signup = (props) => {
           name="password" 
           placeholder="Password **" 
         />
+        <Tooltip text={'Has to be at least 8 characters'} />
       </div>
       
       <p className="form-info">* - optional</p>

@@ -21,5 +21,14 @@
   }
   & .logout {
     margin-left: auto;
+    cursor: pointer;
+
+    &>button {
+      border: solid $interactive 2px;
+      background: none;
+      color: $interactive;
+      font-size: large;
+    }
+    
   }
 }

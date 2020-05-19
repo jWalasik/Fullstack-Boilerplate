@@ -10,6 +10,19 @@ module.exports = class GoogleAuth {
     }
     this.redirect = process.env.GOOGLE_REDIRECT || 'http://localhost:8080/google-callback'
   }
+  getCertificates(){
+    return new Promise((resolve, reject)) => {
+      request('https://www.googleapis.com/oauth2/v1/certs', (err, res, body) => {
+        if(err) {
+            console.log(err, res.statusCode)
+            reject(err)
+          }
+          const json = JSON.parse(body)
+          resolve(json)
+      })
+    }
+  }
+  
   call(code = {}) {
     return new Promise((resolve,reject) => {    
       //TO-DO: implement certificate check, google rotates them regulary so values will expire at some point

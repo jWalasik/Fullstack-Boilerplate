@@ -1,4 +1,5 @@
 import * as React from "react";
+import {withRouter} from 'react-router-dom'
 import {useState} from 'react'
 import { useMutation } from '@apollo/react-hooks'
 import Button from './utils/Button'
@@ -48,11 +49,11 @@ const Reset = (props) => {
     <MessageDisplay message={message} />
     
     <div className="form-buttons">
-      <Button text={'Reset Password'} loading={loading} />
-      <p className="login password_reminder" onClick={()=>props.handler('login')} >Cancel</p>
+      <Button text={'Reset Password'} loading={loading} handler={null} />
+      <p className="login password_reminder" onClick={()=>props.history.push('/auth/login')} >Cancel</p>
     </div>       
   </form>
 )};
 
 
-export default Reset
+export default withRouter(Reset)

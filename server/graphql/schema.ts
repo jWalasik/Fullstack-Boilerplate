@@ -12,6 +12,8 @@ const typeDefs = gql`
 
   type Query {
     currentUser: User
+    isAuthenticated: Boolean
+    isAuthorized: Boolean
   }
 
   type Tokens {

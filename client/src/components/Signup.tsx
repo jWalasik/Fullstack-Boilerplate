@@ -1,5 +1,6 @@
 import * as React from "react";
 import {useState} from 'react'
+import {withRouter} from 'react-router-dom'
 import { SIGNUP } from '../apollo/mutations'
 import { useMutation } from "@apollo/react-hooks";
 import MessageDisplay from "./utils/MessageDisplay";
@@ -85,7 +86,7 @@ const Signup = (props) => {
       <div className="form-buttons">          
         <Button text={'SIGNUP'} handler={undefined} loading={loading} />
 
-        <p className="login password_reminder" onClick={()=>props.handler('login')} >Already have account?</p>
+        <p className="login password_reminder" onClick={()=>props.history.push('/auth/login')} >Already have account?</p>
         
       </div>       
     </form>
@@ -93,4 +94,4 @@ const Signup = (props) => {
   
 }
 
-export default Signup
+export default withRouter(Signup)

@@ -1,4 +1,4 @@
-import {ApolloLink, Observable, Operation, NextLink, HttpLink} from 'apollo-boost'
+import {ApolloLink, Observable, Operation, NextLink, HttpLink, FetchResult} from 'apollo-boost'
 import { onError } from 'apollo-link-error';
 
 import {GET_USER} from '../apollo/queries'
@@ -6,15 +6,24 @@ import {REFRESH_TOKEN} from '../apollo/mutations'
 
 export class AuthLink extends ApolloLink {
   client
-  refreshed = false //prevents refreshing loop
+  refreshing = false
+  sessionExpIn = null
 
   injectClient(client) {
     this.client = client
   }
+  refreshToken() {    
+    console.log('try refreshing')
 
-   request(operation: Operation, forward: NextLink): any{
+    this.sessionExpIn = Date.now() + 900000
+  }
+  request(operation: Operation, forward: NextLink): Observable<FetchResult> {
+    console.log(operation)
     const {user} = this.client.readQuery({query: GET_USER})
-
+    if(this.sessionExpIn === null){
+      //session does not exist => try token refresh
+      this.refreshToken()
+    }
     if(user.accessToken) {      
       operation.setContext(({headers = {}} : any) => ({
         headers:{
@@ -22,7 +31,7 @@ export class AuthLink extends ApolloLink {
           authorization: user.accessToken ? `Bearer ${user.accessToken}` : undefined
         }
       }))
-    }    
+    } 
     return forward(operation)
   }
 }

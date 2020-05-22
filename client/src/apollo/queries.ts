@@ -2,7 +2,7 @@ import { gql } from 'apollo-boost';
 
 export const IS_AUTH = gql`
   query IsAuthenticated {
-    isAuthenticated @client
+    isAuthenticated
   }
 `
 export const GET_USER = gql`
@@ -11,6 +11,7 @@ export const GET_USER = gql`
       name
       email
       accessToken
+      sessionExpiresIn
     }
   }
 `

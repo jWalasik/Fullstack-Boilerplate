@@ -11,7 +11,23 @@ const google = new GoogleAuth()
 
 const resolvers = {
   Query: {
-    currentUser: (parent, args, context) => context.user
+    currentUser: (parent, args, context) => context.user,
+    isAuthenticated: (parent, args, context) => {
+      let {cookie} = context.headers
+      if(!cookie) {
+        throw new Error('Refresh token invalid')}
+      cookie = cookie.replace('token=', '')
+      return jwt.verify(cookie, process.env.JWT_REFRESH_SECRET, (err, decoded)=>{
+        console.log(err, decoded)
+        return User.findById(decoded.user.id)
+          .then(user=> !!user)
+          .catch(err=>err)
+      })
+    },
+    isAuthorized: (parent, args, context) => {
+      console.log('checking if user is authorized')
+      return true
+    }
   },
 
   Mutation: {
@@ -215,7 +231,6 @@ const resolvers = {
       })
     },
     refreshToken: async (_,args, context) => {
-      console.log('silent refresh')
       let {cookie} = context.headers
       if(!cookie) {
         throw new Error('Refresh token invalid')}
@@ -225,7 +240,7 @@ const resolvers = {
         if(err){
           return err
         }
-        if(timestamp-decoded>=0){
+        if(timestamp-decoded.exp>=0){
           return new Error('Refresh token expired')
         }
         //get user and update tokens

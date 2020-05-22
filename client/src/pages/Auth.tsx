@@ -1,25 +1,9 @@
 import * as React from 'react'
-import Login from '../components/Login'
-import Signup from '../components/Signup'
-import Reset from '../components/Reset'
-import {useState} from 'react'
 
-const Map = {
-  'login': Login,
-  'signup': Signup,
-  'reset': Reset
-}
-
-const Auth = () => {
-  const [display, setDisplay] = useState('login')
-  let Display = Map[display]
-  const changeDisplay = (e) => {
-    setDisplay(e)
-  }
-
+const Auth = (props) => {
   return (
-    <main>    
-      <Display handler={changeDisplay}/>
+    <main>
+      {props.children}
     </main>
   )
 }

@@ -54,6 +54,7 @@ const server = new ApolloServer({
   typeDefs, 
   resolvers,
   context: ({req,res}) => {   
+    
     return req
   },
   playground: {

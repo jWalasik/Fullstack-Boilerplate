@@ -1,5 +1,6 @@
 import * as React from 'react'
 import {Route, Redirect} from 'react-router-dom'
+import Auth from '../pages/Auth'
 import Nav from '../components/Nav'
 import {useQuery} from '@apollo/react-hooks'
 import {GET_USER} from '../apollo/queries'
@@ -16,7 +17,7 @@ export const PrivateRoute = ({component: Component, ...rest}) => {
           <Component {...props} />
         </React.Fragment>        
       ) : (
-        <Redirect to='/' />
+        <Redirect to='/auth/login' />
       )
     )} />
   )
@@ -25,14 +26,17 @@ export const PrivateRoute = ({component: Component, ...rest}) => {
 export const PublicRoute = ({component: Component, ...rest}) => {
   const {client, loading, data: {user: {accessToken}}} = useQuery(GET_USER, {fetchPolicy: 'cache-only'})
   
-  return accessToken ? <Redirect to='/home' /> : <Component />
+  //return accessToken ? <Redirect to='/' /> : <Component />
   //nesting components in route th
+  console.log(Component)
   return (
     <Route {...rest} component={(props)=>(
       !accessToken ? (
-          <Component {...props} />  
+        <Auth>
+          <Component {...props} />
+        </Auth>
       ) : (
-        <Redirect to='/home' />
+        <Redirect to='/' />
       )
     )} />
   )

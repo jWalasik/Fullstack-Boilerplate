@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {useState} from 'react'
-import { useHistory } from "react-router-dom";
+import { withRouter, useHistory } from "react-router-dom";
 import {gql} from 'apollo-boost'
 import {useMutation, useApolloClient} from '@apollo/react-hooks'
 import Socials from './Socials'
@@ -56,7 +56,7 @@ const Login = (props) => {
             }
           }
         })
-        history.push('/')
+        //history.push('/')
       })
       .catch(err=>console.log(err))
   }
@@ -66,7 +66,7 @@ const Login = (props) => {
     >
       <h1 className="login-header">Login to your account</h1>
       <p className="login-header breaker">or</p>
-      <p className="login-header signup" onClick={()=>props.handler('signup')}>Register new user</p>
+      <p className="login-header signup" onClick={()=>props.history.push('/auth/signup')}>Register new user</p>
 
       <Socials />
       <div className="input-field">
@@ -100,7 +100,7 @@ const Login = (props) => {
       <div className="form-buttons">
         <Button text={'LOG IN'} handler={undefined} loading={loading} />
         
-        <p className="login password_reminder" onClick={()=>props.handler('reset')}>Forgot Password?</p>
+        <p className="login password_reminder" onClick={()=>props.history.push('/auth/reset')}>Forgot Password?</p>
       </div>         
     </form>
   );
@@ -108,4 +108,4 @@ const Login = (props) => {
 
   
 
-export default Login
+export default withRouter(Login)

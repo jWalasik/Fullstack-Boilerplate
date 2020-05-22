@@ -47,7 +47,7 @@ const FaceookSignIn: any = (props) => {
 
   return (
     <a className="login-options__link" href='/google-login' onClick={handleClick}>
-      {loading ? <Button loading={loading} /> : <img className="social-link__icon" src={google.default} id="google" /> }
+      {loading ? <Button text='' loading={loading} handler={null} /> : <img className="social-link__icon" src={google.default} id="google" /> }
     </a>
   )
 }

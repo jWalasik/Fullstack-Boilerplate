@@ -1,4 +1,4 @@
-signup: (_, args) => {
+const signup = (_, args) => {
   console.log(args)
   return User.create(args)
   .then(user => {

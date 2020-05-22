@@ -48,7 +48,7 @@ const FaceookSignIn = (props) => {
 
   return (
     <a className="login-options__link" href='/facebook-login' onClick={handleClick}>
-      {loading ? <Button loading={loading} /> : <img className="social-link__icon" src={fb.default} id="facebook" /> }
+      {loading ? <Button text='' loading={loading} handler={null} /> : <img className="social-link__icon" src={fb.default} id="facebook" /> }
     </a>
   )
 }

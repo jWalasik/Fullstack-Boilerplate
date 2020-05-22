@@ -35,6 +35,15 @@ userSchema.pre('save', function() {
 })
 
 // Model Methods
+userSchema.statics.processCookie = function ({cookie}) {
+  if(!cookie) throw new Error('Refresh token missing')
+  return jwt.verify(cookie.replace('token=', ''), process.env.JWT_REFRESH_SECRET, (err,decoded) => {
+    if(err) throw new Error(err)
+    return decoded
+  })
+  
+}
+
 userSchema.statics.getUser = function ({accessToken, cookie}) {
   if(!accessToken){
     return jwt.verify(cookie.replace('token=', ''), process.env.JWT_REFRESH_SECRET, async (err, decoded)=>{

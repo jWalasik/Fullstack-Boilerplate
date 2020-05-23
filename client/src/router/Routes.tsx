@@ -8,7 +8,7 @@ import {GET_USER} from '../apollo/queries'
 export const PrivateRoute = ({component: Component, ...rest}) => {
   const {client, loading, data} = useQuery(GET_USER, {fetchPolicy: 'cache-only'})
   let isAuthenticated = !!data.user.accessToken
-
+  console.log('private route')
   return (
     <Route {...rest} component={(props)=>(
       isAuthenticated ? (
@@ -25,10 +25,7 @@ export const PrivateRoute = ({component: Component, ...rest}) => {
 
 export const PublicRoute = ({component: Component, ...rest}) => {
   const {client, loading, data: {user: {accessToken}}} = useQuery(GET_USER, {fetchPolicy: 'cache-only'})
-  
-  //return accessToken ? <Redirect to='/' /> : <Component />
-  //nesting components in route th
-  console.log(Component)
+  console.log('public route')
   return (
     <Route {...rest} component={(props)=>(
       !accessToken ? (

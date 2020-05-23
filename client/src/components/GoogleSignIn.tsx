@@ -18,7 +18,7 @@ interface GoogleSignIn {
   state: State
 }
 
-const FaceookSignIn: any = (props) => {
+const GoogleSignIn: any = (props) => {
   const clientId = '595630687793-7psec6hg5iva4vfn1n9no84i5n2op3ok.apps.googleusercontent.com'
   const redirectUrl = `${document.location.protocol}//${document.location.host}/google-callback`;
   const code = (document.location.pathname === '/google-callback') ? querystring.parse(document.location.search)['?code'] : null
@@ -52,4 +52,4 @@ const FaceookSignIn: any = (props) => {
   )
 }
 
-export default withRouter(FaceookSignIn)
+export default withRouter(GoogleSignIn)

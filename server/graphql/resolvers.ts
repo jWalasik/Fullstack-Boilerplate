@@ -62,7 +62,7 @@ const resolvers = {
               subject: `Password reset request`,
               text: `
               <p>You requested a password reset</p>
-              <p>Click this <a href="http://localhost:8080/reset${token}">link</a> to set a new password.</p>
+              <p>Click this <a href="http://localhost:8080/auth/reset${token}">link</a> to set a new password.</p>
               `
             }
             mailgun.messages().send(message, function (error, body) {

@@ -13,8 +13,9 @@ module.exports = merge(basicConfig, {
     './styles/styles.scss'
   ],
   output: {
-    filename: 'main.js',
-    path: path.resolve(__dirname, '../client/public/')
+    filename: 'bundle.js',
+    publicPath: '/',
+    path: path.resolve(__dirname, '../client')
   },
   devServer: {
     historyApiFallback: true,

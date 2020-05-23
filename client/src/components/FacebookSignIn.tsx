@@ -21,8 +21,8 @@ interface FaceookSignIn {
 
 const FaceookSignIn = (props) => {
   const appId = '187856148967924'
-  const redirectUrl = `${document.location.protocol}//${document.location.host}/facebook-callback`
-  const code = (document.location.pathname === '/facebook-callback') ? querystring.parse(document.location.search)['?code'] : null
+  const redirectUrl = `${document.location.protocol}//${document.location.host}/auth/facebook-callback`
+  const code = (document.location.pathname === '/auth/facebook-callback') ? querystring.parse(document.location.search)['?code'] : null
   const [callFacebook, {client, data, loading, error, called}] = useMutation(FACEBOOK_SIGN_IN, {onCompleted: (data)=>{
     const {name, email, accessToken} = data.facebookSignIn
     client.writeData({

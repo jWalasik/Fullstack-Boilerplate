@@ -3,7 +3,6 @@ import {BrowserRouter, Switch, Route} from 'react-router-dom'
 
 import {PublicRoute, PrivateRoute} from './Routes'
 
-import Auth from '../pages/Auth'
 import Home from '../pages/Home'
 import Settings from '../pages/Settings'
 import SetPassword from '../pages/SetPassword'
@@ -16,22 +15,31 @@ import Reset from '../components/Reset'
 import Login from '../components/Login'
 
 export default () => {
-  const {loading, data, error} = useQuery(IS_AUTH)
+  const [refreshToken, {client, loading, called, data}] = useMutation(REFRESH_TOKEN, {
+    onCompleted: (res) => {
+
+    },
+    onError: (err) => {
+
+    }
+  })
   React.useEffect(()=>{
-    console.log('router')
+    console.log('token refresh from router')
+    refreshToken()
   },[])
-  console.log(data)
+  
   return (
     <BrowserRouter history>
       <Switch>
       <PrivateRoute exact path="/" component={Home} />
       <PrivateRoute exact path="/settings" component={Settings} />
 
-      <PublicRoute exact path='/auth/reset:token' component={SetPassword} />
-      <PublicRoute exact path='/auth/login:callback?' component={Login} />
+      <PublicRoute exact path='/auth/reset:token' component={SetPassword} />      
       <PublicRoute exact path='/auth/signup' component={Signup} />
       <PublicRoute exact path='/auth/reset' component={Reset} />
       
+      <PublicRoute path='/auth:login?' component={Login} />
+
       <Route path='*' component={FourOhFour} />
     </Switch>
   </BrowserRouter>

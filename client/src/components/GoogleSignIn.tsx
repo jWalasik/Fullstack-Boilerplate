@@ -20,8 +20,8 @@ interface GoogleSignIn {
 
 const GoogleSignIn: any = (props) => {
   const clientId = '595630687793-7psec6hg5iva4vfn1n9no84i5n2op3ok.apps.googleusercontent.com'
-  const redirectUrl = `${document.location.protocol}//${document.location.host}/google-callback`;
-  const code = (document.location.pathname === '/google-callback') ? querystring.parse(document.location.search)['?code'] : null
+  const redirectUrl = `${document.location.protocol}//${document.location.host}/auth/google-callback`;
+  const code = (document.location.pathname === '/auth/google-callback') ? querystring.parse(document.location.search)['?code'] : null
   const [callGoogle, {client, data, loading, error, called}] = useMutation(GOOGLE_SIGN_IN, {onCompleted: (data)=>{
     const {name, email, accessToken} = data.googleSignIn
     client.writeData({
@@ -46,10 +46,10 @@ const GoogleSignIn: any = (props) => {
   }
 
   return (
-    <a className="login-options__link" href='/google-login' onClick={handleClick}>
+    <a className="login-options__link" href='/auth/google-login' onClick={handleClick}>
       {loading ? <Button text='' loading={loading} handler={null} /> : <img className="social-link__icon" src={google.default} id="google" /> }
     </a>
   )
 }
 
-export default withRouter(GoogleSignIn)
+export default GoogleSignIn

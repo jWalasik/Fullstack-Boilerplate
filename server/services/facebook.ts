@@ -7,7 +7,7 @@ module.exports = class FB {
       appId: process.env.FB_APP_ID,
       secret: process.env.FB_APP_KEY
     }
-    this.redirectUrl = process.env.FB_REDIRECT || 'http://localhost:8080/facebook-callback'
+    this.redirectUrl = process.env.FB_REDIRECT || 'http://localhost:8080/auth/facebook-callback'
   }
   
   call(method, params = {}) {

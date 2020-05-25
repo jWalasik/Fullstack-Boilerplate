@@ -16,7 +16,6 @@ const Settings = () => {
     onCompleted: ({changePassword})=> setMessage(changePassword),
     onError: (err)=> {
       err.graphQLErrors.map(({message}, i) => {
-        console.log(message)
         setMessage({
           type: 'Error',
           text: message

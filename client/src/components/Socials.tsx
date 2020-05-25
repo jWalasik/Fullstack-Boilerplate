@@ -5,7 +5,7 @@ import * as google from '../../public/images/google-icon.png'
 import * as fb from '../../public/images/fb-icon.png'
 import * as twitter from '../../public/images/twitter-icon.png'
 
-const Socials = () => {
+const Socials = (props) => {
   return (
     <div>
       <ul className="login-options">
@@ -18,9 +18,7 @@ const Socials = () => {
         </li>
 
         <li>
-          <a className="login-options__link" 
-            //href="/auth/twitter"
-          >
+          <a className="login-options__link" href="/auth/twitter" >
             <img className="social-link__icon" src={twitter.default}  id="twitter" />
           </a>
         </li>

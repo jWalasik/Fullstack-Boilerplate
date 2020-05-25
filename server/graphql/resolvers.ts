@@ -180,6 +180,7 @@ const resolvers = {
       })
     },
     facebookSignIn: (_, args, context) => {
+      console.log('fb sign in')
       return new Promise((resolve, reject) => {
         const {code} = args
         facebook.call('oauth/access_token', {code}).then(response => {

@@ -20,8 +20,6 @@ const _login = gql`
 `
 
 const Login = (props) => {
-  let history = useHistory();
-  const client = useApolloClient()
   const [password, setPassword] = useState('')
   const [login, setLogin] = useState('')
   const [message, setMessage] = useState({
@@ -29,7 +27,7 @@ const Login = (props) => {
     text: undefined
   })
 
-  const [submitLogin, {data, loading}] = useMutation(_login, {
+  const [submitLogin, {client, data, loading}] = useMutation(_login, {
     onError: (err)=> {
       err.graphQLErrors.map(({message}, i) => {
         setMessage({

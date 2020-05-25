@@ -86,8 +86,7 @@ const Signup = (props) => {
       <div className="form-buttons">          
         <Button text={'SIGNUP'} handler={undefined} loading={loading} />
 
-        <p className="login password_reminder" onClick={()=>props.history.push('/auth/login')} >Already have account?</p>
-        
+        <p className="login password_reminder" onClick={()=>props.history.push('/auth/login')} >Already have account?</p>        
       </div>       
     </form>
   );

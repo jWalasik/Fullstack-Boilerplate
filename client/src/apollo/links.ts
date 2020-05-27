@@ -12,18 +12,10 @@ export class AuthLink extends ApolloLink {
   injectClient(client) {
     this.client = client
   }
-  refreshToken() {    
-    console.log('try refreshing')
 
-    this.sessionExpIn = Date.now() + 900000
-  }
   request(operation: Operation, forward: NextLink): Observable<FetchResult> {
-    console.log(operation)
     const {user} = this.client.readQuery({query: GET_USER})
-    if(this.sessionExpIn === null){
-      //session does not exist => try token refresh
-      this.refreshToken()
-    }
+
     if(user.accessToken) {      
       operation.setContext(({headers = {}} : any) => ({
         headers:{

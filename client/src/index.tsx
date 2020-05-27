@@ -10,6 +10,7 @@ import { defaultState } from './apollo/store'
 
 import App from "./router";
 import { REFRESH_TOKEN } from "./apollo/mutations";
+import { AuthProvider } from "./components/utils/AuthProvider";
 
 const cache = new InMemoryCache()
 cache.writeData({
@@ -40,27 +41,11 @@ client.onResetStore(():any => {
   cache.writeData({data : defaultState });
 });
 
-// client.mutate({mutation: REFRESH_TOKEN}).then((res) => {
-// 	console.log('refresh')
-// 	if(res) {
-// 		const {name, email, accessToken} = res.data.refreshToken
-// 		client.writeData({
-// 			data: {
-// 				user: {
-// 					name: name,
-// 					email: email,
-// 					accessToken: accessToken,
-// 					__typename: 'User'
-// 				}
-// 			}
-// 		})
-// 		//setAutorefresh(this)
-// 	}
-// })
-
 render(
 	<ApolloProvider client={client}>
-		<App />          
+		<AuthProvider >
+			<App /> 
+		</AuthProvider>		         
 	</ApolloProvider>,
 	document.getElementById("root"),
 );

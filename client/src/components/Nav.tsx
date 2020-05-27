@@ -2,15 +2,10 @@ import * as React from "react";
 import { Link, withRouter } from "react-router-dom";
 import { LOGOUT } from "../apollo/mutations";
 import { useQuery,useMutation, useApolloClient } from "@apollo/react-hooks";
+import { useAuth } from '../components/utils/AuthProvider'
 
 const Nav = (props) => {
-  const [logout, {data}] = useMutation(LOGOUT)
-  const client = useApolloClient()
-  const handleLogout = (e) => {
-    logout().then(res=> {
-      client.resetStore()
-    })    
-  }
+  const {logout} = useAuth()
   return (
       <nav className="menu">
         <ul className="menu-list">
@@ -21,7 +16,7 @@ const Nav = (props) => {
             <Link to="/settings">Settings</Link>
           </li>
           <li className="logout">
-            <button onClick={handleLogout}>
+            <button onClick={logout}>
               Logout
             </button>
           </li>

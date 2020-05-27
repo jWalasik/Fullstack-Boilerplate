@@ -39,11 +39,7 @@ const FaceookSignIn = (props) => {
     }
   })
   React.useEffect(()=>{
-    if(code && !called) {
-      callFacebook({variables: {code: code}})
-    }
-    
-    return ()=>console.log('fb unmount')
+    if(code && !called) callFacebook({variables: {code: code}})
   }, [])
 
   

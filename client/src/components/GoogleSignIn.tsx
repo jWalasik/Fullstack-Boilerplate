@@ -1,10 +1,9 @@
 import * as React from 'react'
 import querystring from 'querystring'
-import {useMutation, useApolloClient} from '@apollo/react-hooks'
+import {useMutation} from '@apollo/react-hooks'
 import * as google from '../../public/images/google-icon.png'
-import {withRouter} from 'react-router-dom'
 import Button from './utils/Button'
-
+import {useAuth} from './utils/AuthProvider'
 import {GOOGLE_SIGN_IN} from '../apollo/mutations'
 
 interface State {
@@ -19,22 +18,12 @@ interface GoogleSignIn {
 }
 
 const GoogleSignIn: any = (props) => {
+  const {login} = useAuth()
   const clientId = '595630687793-7psec6hg5iva4vfn1n9no84i5n2op3ok.apps.googleusercontent.com'
   const redirectUrl = `${document.location.protocol}//${document.location.host}/auth/google-callback`;
   const code = (document.location.pathname === '/auth/google-callback') ? querystring.parse(document.location.search)['?code'] : null
-  const [callGoogle, {client, data, loading, error, called}] = useMutation(GOOGLE_SIGN_IN, {onCompleted: (data)=>{
-    const {name, email, accessToken} = data.googleSignIn
-    client.writeData({
-      data: {
-        user: {
-          name: name,
-          email: email,
-          accessToken: accessToken,
-          __typename: 'User'
-        }
-      }
-    })
-  }})
+  const [callGoogle, {client, data, loading, error, called}] = useMutation(GOOGLE_SIGN_IN, {
+    onCompleted: ({googleSignIn})=> login(googleSignIn)})
 
   if(code && !called) {
     callGoogle({variables: {code: code}})

@@ -1,11 +1,12 @@
 import * as React from 'react';
 import {useState} from 'react'
-import { withRouter, useHistory } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import {gql} from 'apollo-boost'
-import {useMutation, useApolloClient} from '@apollo/react-hooks'
+import {useMutation} from '@apollo/react-hooks'
 import Socials from './Socials'
 import Button from './utils/Button'
 import MessageDisplay from './utils/MessageDisplay'
+import {useAuth} from './utils/AuthProvider'
 
 const _login = gql`
   mutation login($login: String!, $password: String!) {
@@ -20,6 +21,7 @@ const _login = gql`
 `
 
 const Login = (props) => {
+  const auth = useAuth()
   const [password, setPassword] = useState('')
   const [login, setLogin] = useState('')
   const [message, setMessage] = useState({
@@ -28,6 +30,7 @@ const Login = (props) => {
   })
 
   const [submitLogin, {client, data, loading}] = useMutation(_login, {
+    onCompleted: ({login}) => auth.login(login),
     onError: (err)=> {
       err.graphQLErrors.map(({message}, i) => {
         setMessage({
@@ -40,23 +43,7 @@ const Login = (props) => {
 
   const handleSubmit = e => {
     e.preventDefault()
-
     submitLogin({variables: {login, password}})
-      .then(payload => {
-        const {name, email, accessToken} = payload.data.login
-        client.writeData({
-          data: {
-            user: {
-              name: name,
-              email: email,
-              accessToken: accessToken,
-              __typename: 'User'
-            }
-          }
-        })
-        //history.push('/')
-      })
-      .catch(err=>console.log(err))
   }
   return (
     <form className="login-form"

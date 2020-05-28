@@ -16,13 +16,14 @@ const AuthContext = React.createContext({
 })
 
 const AuthReducer = (state, action) => {
+  console.log(state,action)
   switch (action.type) {
     case 'LOGIN':
-      console.log('login', action.payload)
-      return {...state, user: action.payload}
+      console.log('xxx')
+      return {...state, isAuthenticated: true}
     case 'LOGOUT':
       console.log('logout', action.payload)
-      return {...state, user: null}
+      return {...state, isAuthenticated: false}
     default: return state
   }
 }
@@ -31,7 +32,7 @@ const AuthProvider = (props) => {
   const [state, dispatch] = React.useReducer(AuthReducer, initialState)
   const [refreshToken, {data,client,loading}] = useMutation(REFRESH_TOKEN, {
     onCompleted: ({refreshToken})=>{
-      saveUser(refreshToken)
+      login(refreshToken)
     },
     onError: (err)=>{
       console.log('refresh failed')
@@ -49,8 +50,9 @@ const AuthProvider = (props) => {
     return ()=>console.log('AuthProvider unmounted')
   }, [])
 
-  const saveUser = (user) => {
-    const {name, email, accessToken} = user
+  const login = (userData) => {
+    console.log('AuthProvider login')
+    const {name, email, accessToken} = userData
     client.writeData({
       data: {
         user: {
@@ -61,22 +63,19 @@ const AuthProvider = (props) => {
         }
       }
     })
-
+    console.log('dispatch')
+    dispatch({type: 'LOGIN'})
     nextRefreshIn(840000)
-  }
-  const login = (userData) => {
-    console.log("login")
-    dispatch({action: 'LOGIN'})
   }
 
   const logout = () => {
     console.log('logout')
     client.resetStore()
-    dispatch({action: 'LOGOUT'})
+    dispatch({type: 'LOGOUT'})
     //logout needs to blacklist token to prevent user authentication between reloads, WIP
   }
 
-  return <AuthContext.Provider value={{state, login, logout}} {...props} />
+  return <AuthContext.Provider value={{isAuthenticated: state.isAuthenticated, login, logout}} {...props} />
 }
 
 const useAuth = () => React.useContext(AuthContext)

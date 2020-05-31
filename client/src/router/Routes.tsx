@@ -8,22 +8,11 @@ import {GET_USER} from '../apollo/queries'
 import {useAuth} from '../components/utils/AuthProvider'
 
 export const PrivateRoute = ({component: Component, ...rest}) => {
-  //check if user is authenticated
   const auth = useAuth()
-  console.log('priv route',auth.isAuthenticated)
-  //set state hook prevents calling api twice on callbacks url
-  // const [loader, setLoader] = React.useState(false)
-  // const {client, loading, data: {user: {accessToken}}, called} = useQuery(GET_USER, {
-  //   fetchPolicy: 'cache-only', 
-  //   onCompleted:() => setLoader(true)
-  // })
-
-  // if(!loader) return <Loader />
 
   return (
       <Route {...rest} component={(props)=>(
         auth.isAuthenticated ? (
-      //accessToken ? (
         <React.Fragment>
           <Nav />
           <Component {...props} />
@@ -37,20 +26,10 @@ export const PrivateRoute = ({component: Component, ...rest}) => {
 
 export const PublicRoute = ({component: Component, ...rest}) => {
   const auth = useAuth()
-  console.log('pub route', auth.isAuthenticated)
-  //set state hook prevents calling api twice on callbacks url
-  // const [loader, setLoader] = React.useState(false)
-  // const {client, loading, data: {user: {accessToken}}, called} = useQuery(GET_USER, {
-  //   fetchPolicy: 'cache-only', 
-  //   onCompleted:() => setLoader(true)
-  // })  
-  
-  // if(!loader) return <Loader />
-  
+
   return (
     <Route {...rest} component={(props)=>(
       !auth.isAuthenticated ? (
-      //!accessToken ? (
         <Auth>
           <Component {...props} />
         </Auth>

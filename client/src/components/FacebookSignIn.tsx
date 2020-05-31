@@ -24,14 +24,18 @@ const FaceookSignIn = (props) => {
   const redirectUrl = `${document.location.protocol}//${document.location.host}/auth/facebook-callback`
   const code = (document.location.pathname === '/auth/facebook-callback') ? querystring.parse(document.location.search)['?code'] : null
   const [callFacebook, {client, data, loading, error, called}] = useMutation(FACEBOOK_SIGN_IN, {
-    onCompleted: ({facebookSignIn})=> login(facebookSignIn),
+    onCompleted: ({facebookSignIn})=> {
+      console.log('FB LOGIN MUTATION COMPLETE')
+      login(facebookSignIn)},
     onError: (err=>console.log(err))
   })
   React.useEffect(()=>{
-    if(code && !called) callFacebook({variables: {code: code}})
+    console.log('fb mount', called, loading, data, client)
+    if(code && !called && !loading) {
+      callFacebook({variables: {code: code}})
+    }
+    return ()=>console.log('fb dismount')
   }, [])
-
-  
   
   const handleClick = e => {
     e.preventDefault()

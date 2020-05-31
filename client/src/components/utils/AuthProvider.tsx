@@ -2,8 +2,12 @@ import * as React from 'react'
 import Loader from '../../pages/Loader'
 import {useMutation} from '@apollo/react-hooks'
 import { REFRESH_TOKEN } from '../../apollo/mutations'
-  
+
+//external authentication services like facebook operates by url callbacks, this preserves refresh state between page reloads
+
+
 const initialState = {
+  loading: false,
   resolved: false,
   isAuthenticated: false,
   redirected: false,
@@ -16,10 +20,9 @@ const AuthContext = React.createContext({
 })
 
 const AuthReducer = (state, action) => {
-  console.log(state,action)
   switch (action.type) {
     case 'LOGIN':
-      console.log('xxx')
+      console.log('login reducer')
       return {...state, isAuthenticated: true}
     case 'LOGOUT':
       console.log('logout', action.payload)
@@ -30,12 +33,14 @@ const AuthReducer = (state, action) => {
 
 const AuthProvider = (props) => {
   const [state, dispatch] = React.useReducer(AuthReducer, initialState)
-  const [refreshToken, {data,client,loading}] = useMutation(REFRESH_TOKEN, {
+  const [refreshToken, {data,client,loading, called}] = useMutation(REFRESH_TOKEN, {
     onCompleted: ({refreshToken})=>{
+      console.log('TRYING TO REFRESH', Date.now(), refreshToken)
       login(refreshToken)
     },
     onError: (err)=>{
       console.log('refresh failed')
+
     }
   })
   //accessToken expires in 15min, to keep session continuous call refreshToken mutation every 14 min
@@ -45,13 +50,18 @@ const AuthProvider = (props) => {
     }, ms)
   }
   React.useEffect(()=>{
-    console.log('AuthProvider mounted')
-    refreshToken()
+    const session = (parseInt(sessionStorage.getItem('refreshed')) - Date.now()) > 0
+    console.log(session)
+    if(!session) {
+      refreshToken()
+      const expiration = (Date.now() + 840000).toString()
+      sessionStorage.setItem('refreshed', expiration)
+    }
+    
     return ()=>console.log('AuthProvider unmounted')
   }, [])
 
   const login = (userData) => {
-    console.log('AuthProvider login')
     const {name, email, accessToken} = userData
     client.writeData({
       data: {
@@ -63,19 +73,17 @@ const AuthProvider = (props) => {
         }
       }
     })
-    console.log('dispatch')
     dispatch({type: 'LOGIN'})
     nextRefreshIn(840000)
   }
 
   const logout = () => {
-    console.log('logout')
     client.resetStore()
     dispatch({type: 'LOGOUT'})
     //logout needs to blacklist token to prevent user authentication between reloads, WIP
   }
-
-  return <AuthContext.Provider value={{isAuthenticated: state.isAuthenticated, login, logout}} {...props} />
+  //if(loading) return <Loader />
+  return <AuthContext.Provider value={{isAuthenticated: state.isAuthenticated, loading: loading, login, logout}} {...props} />
 }
 
 const useAuth = () => React.useContext(AuthContext)
